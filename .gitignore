@@ -1,0 +1,9 @@
+.env
+backend/vendor/
+backend/.env
+frontend/node_modules/
+frontend/.svelte-kit/
+frontend/build/
+pgdata/
+dev/
+
