@@ -16,7 +16,7 @@ services:
       - backend
       #- frontend
     networks:
-      - thinkertanker
+      - councilofcrows
     restart: unless-stopped
 
   # ─────────────────────────────────────────────
@@ -35,8 +35,8 @@ services:
       DB_CONNECTION: pgsql
       DB_HOST: db
       DB_PORT: 5432
-      DB_DATABASE: ${DB_DATABASE:-thinkertanker}
-      DB_USERNAME: ${DB_USERNAME:-thinkertanker}
+      DB_DATABASE: ${DB_DATABASE:-councilofcrows}
+      DB_USERNAME: ${DB_USERNAME:-councilofcrows}
       DB_PASSWORD: ${DB_PASSWORD:-secret}
       REDIS_HOST: redis
       REDIS_PORT: 6379
@@ -51,7 +51,7 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - thinkertanker
+      - councilofcrows
     restart: unless-stopped
 
   # ─────────────────────────────────────────────
@@ -70,8 +70,8 @@ services:
       DB_CONNECTION: pgsql
       DB_HOST: db
       DB_PORT: 5432
-      DB_DATABASE: ${DB_DATABASE:-thinkertanker}
-      DB_USERNAME: ${DB_USERNAME:-thinkertanker}
+      DB_DATABASE: ${DB_DATABASE:-councilofcrows}
+      DB_USERNAME: ${DB_USERNAME:-councilofcrows}
       DB_PASSWORD: ${DB_PASSWORD:-secret}
       REDIS_HOST: redis
       REDIS_PORT: 6379
@@ -85,7 +85,7 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - thinkertanker
+      - councilofcrows
     restart: unless-stopped
 
   # ─────────────────────────────────────────────
@@ -103,7 +103,7 @@ services:
   #  ports:
   #    - "5173:5173"
   #  networks:
-  #    - thinkertanker
+  #    - councilofcrows
   #  restart: unless-stopped
 
   # ─────────────────────────────────────────────
@@ -114,18 +114,18 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: ${DB_DATABASE:-thinkertanker}
-      POSTGRES_USER: ${DB_USERNAME:-thinkertanker}
+      POSTGRES_DB: ${DB_DATABASE:-councilofcrows}
+      POSTGRES_USER: ${DB_USERNAME:-councilofcrows}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-thinkertanker}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-councilofcrows}"]
       interval: 5s
       timeout: 5s
       retries: 10
     networks:
-      - thinkertanker
+      - councilofcrows
     restart: unless-stopped
 
   # ─────────────────────────────────────────────
@@ -142,11 +142,11 @@ services:
       timeout: 3s
       retries: 10
     networks:
-      - thinkertanker
+      - councilofcrows
     restart: unless-stopped
 
 networks:
-  thinkertanker:
+  councilofcrows:
     driver: bridge
 
 volumes:

@@ -18,10 +18,10 @@ export default defineConfig(({ command }) => {
             port: 3088,
             host: true, // Add this to listen on all network interfaces
             ...(isDev && {
-                allowedHosts: ['thinkertanker.dv', 'thinkertanker.klams.dv', '.thinkertanker.dv'], 
+                allowedHosts: ['councilofcrows.dv', '.councilofcrows.dv'], 
                 https: {
-                    key: fs.readFileSync("../certs/thinkertanker.dv-key.pem"),
-                    cert: fs.readFileSync("../certs/thinkertanker.dv.pem"),
+                    key: fs.readFileSync("../certs/councilofcrows.dv-key.pem"),
+                    cert: fs.readFileSync("../certs/councilofcrows.dv.pem"),
                 },
             }),
         },
