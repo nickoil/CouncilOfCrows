@@ -4,7 +4,7 @@
 
 Nick Casey 2026-05-24
 
-1.  **Introduction**
+## 1. Introduction
 
 Large language models (LLMs) are rapidly becoming foundational tools for
 reasoning, research, software development, and decision support.
@@ -63,7 +63,7 @@ institution-oriented model of machine deliberation. This document
 outlines the philosophical basis, architectural design, memory model,
 and deliberative mechanisms underlying the proposed system.
 
-2.  **The Problems**
+## 2. The Problems
 
 Current large language model systems are highly capable within short
 conversational horizons, but most remain fundamentally session-oriented
@@ -74,7 +74,7 @@ This creates several structural limitations that become increasingly
 apparent when attempting to use LLMs for long-term reasoning, strategic
 planning, research continuity, or institutional knowledge development.
 
-**2.1 Absence of Persistent Institutional Cognition**
+### 2.1 Absence of Persistent Institutional Cognition
 
 Most current LLM systems do not accumulate coherent organisational
 understanding over time. While some platforms provide limited
@@ -103,8 +103,7 @@ This limitation becomes increasingly significant in domains requiring
 sustained strategic thinking, cumulative research, or long-term project
 continuity.
 
-**2.2 Fragile Multi-Agent Architectures**
-
+### 2.2 Fragile Multi-Agent Architectures
 Recent multi-agent systems have demonstrated promising capabilities, but
 many remain operationally fragile and difficult to control reliably.
 Autonomous agents frequently exhibit:
@@ -125,8 +124,7 @@ formation.
 As a result, many existing systems behave more like loosely coordinated
 collections of prompts than stable collaborative reasoning environments.
 
-**2.3 Orchestration Without Deliberation**
-
+### 2.3 Orchestration Without Deliberation
 Many current frameworks focus primarily on orchestration mechanics:
 - workflow routing
 - task delegation
@@ -148,8 +146,7 @@ comparatively underdeveloped in most current LLM architectures.
 Consequently, many agent systems function primarily as distributed
 workflow engines rather than persistent deliberative systems.
 
-**2.4 Absence of Epistemic Tracking**
-
+### 2.4 Absence of Epistemic Tracking
 Most current LLM systems do not meaningfully track the historical
 reliability or evolution of their own reasoning. Outputs are generally
 presented without durable mechanisms for recording:
@@ -176,8 +173,7 @@ deliberative architecture --- combining multi-model collaboration,
 institutional memory, and consensus-oriented reasoning --- can partially
 address this gap.
 
-**3. System Philosophy**
-
+## 3. System Philosophy
 The proposed architecture is based on the assumption that effective
 long-term reasoning emerges not simply from larger individual models,
 but from structured deliberation, persistent memory, and the
@@ -188,8 +184,7 @@ coordinated through a shared cognitive framework.
 
 The following principles underpin the design of the system.
 
-**3.1 Councils Rather Than Swarms**
-
+### 3.1 Councils Rather Than Swarms
 Many recent multi-agent architectures emphasise large numbers of
 semi-autonomous agents operating simultaneously. While such systems may
 demonstrate emergent behaviour, they often suffer from instability,
@@ -208,8 +203,7 @@ between stable contributors with differing perspectives. The proposed
 council model attempts to replicate aspects of this process within a
 machine-mediated reasoning environment.
 
-**3.2 Persistent Memory as Institutional Knowledge**
-
+### 3.2 Persistent Memory as Institutional Knowledge
 The system treats memory not merely as conversational history, but as
 accumulated institutional knowledge. Prior discussions, conclusions,
 disagreements, refinements, and strategic themes are retained and
@@ -225,8 +219,7 @@ The objective is not perfect recall, but evolving cognitive continuity:
 the gradual accumulation of contextual understanding through repeated
 deliberation over time.
 
-**3.3 Cognitive Roles Rather Than Subject Silos**
-
+### 3.3 Cognitive Roles Rather Than Subject Silos
 The architecture favours persistent cognitive roles over rigid domain
 specialisation. Instead of maintaining permanently isolated "finance
 agents", "history agents", or "coding agents", the system organises its
@@ -248,8 +241,7 @@ Domain expertise may still be introduced dynamically where required, but
 the enduring identity of the council is based primarily on modes of
 reasoning rather than static knowledge ownership.
 
-**3.4 Dynamic Specialists**
-
+### 3.4 Dynamic Specialists
 Where specialised expertise is required, the system may instantiate
 temporary specialist participants for the duration of a particular
 deliberation. These specialists are created dynamically in response to
@@ -276,8 +268,7 @@ This distinction attempts to balance long-term institutional continuity
 with the flexibility required to address diverse and evolving problem
 spaces.
 
-**3.5 Transparent Deliberation**
-
+### 3.5 Transparent Deliberation
 The architecture prioritises visibility of reasoning processes over
 opaque response generation. Deliberation between council members may
 therefore be exposed to the user in structured form, including:
@@ -299,8 +290,7 @@ Rather than presenting a single answer as implicitly authoritative, the
 system attempts to expose elements of the reasoning process that
 produced it.
 
-**3.6 Disagreement Preservation**
-
+### 3.6 Disagreement Preservation
 Human institutions often derive value not only from consensus, but from
 the preservation of informed disagreement. Minority viewpoints,
 unresolved tensions, and conflicting interpretations may remain
@@ -319,8 +309,7 @@ Together, these principles define the system not as a collection of
 autonomous agents, but as a persistent deliberative institution designed
 to accumulate, refine, and apply organisational reasoning over time.
 
-**4. Architecture Overview**
-
+## 4. Architecture Overview
 The system is organized around a central orchestration layer that
 coordinates a persistent council of LLM-based advisors, retrieves
 relevant institutional memory, manages deliberation, and synthesizes
@@ -331,26 +320,27 @@ participate within the common deliberative protocol.
 
 At a high level, the system can be understood as follows:
 
-**Human User**
-**↓**
-**Orchestrator / Chair**
-**↓**
-**Memory Retrieval**
-**↓**
-**Persistent Council Members**
-**↓**
-**Optional Dynamic Specialists**
-**↓**
-**Critique and Deliberation**
-**↓**
-**Consensus / Synthesis**
-**↓**
-**Response to User**
-**↓**
-**Institutional Memory Update**
+```
+Human User
+↓
+Orchestrator / Chair
+↓
+Memory Retrieval
+↓
+Persistent Council Members
+↓
+Optional Dynamic Specialists
+↓
+Critique and Deliberation
+↓
+Consensus / Synthesis
+↓
+Response to User
+↓
+Institutional Memory Update
+```
 
-**4.1 Orchestrator**
-
+### 4.1 Orchestrator
 The orchestrator acts as the chair of the council. It receives the
 user's question, identifies the relevant subject context, retrieves
 prior institutional memory, selects which council members should
@@ -363,8 +353,7 @@ responses are scoped, critique is directed, disagreement is surfaced,
 and the final synthesis reflects the reasoning process rather than
 simply averaging the outputs of several models.
 
-**4.2 Persistent Advisors**
-
+### 4.2 Persistent Advisors
 Persistent advisors are stable council members with defined cognitive
 roles. These roles are not primarily subject-based, but reasoning-based.
 For example, one advisor may focus on strategic implications, another on
@@ -375,8 +364,7 @@ Their persistence allows them to participate in repeated deliberations
 over time and to become part of the continuing institutional identity of
 the system.
 
-**4.3 Retrieval Layer**
-
+### 4.3 Retrieval Layer
 Before deliberation begins, the system retrieves relevant material from
 prior discussions, saved conclusions, unresolved disagreements,
 user-provided documents, and other knowledge sources. This retrieved
@@ -386,8 +374,7 @@ individual council members.
 Retrieval is therefore not treated as a separate search function, but as
 part of the council's memory process.
 
-**4.4 Memory System**
-
+### 4.4 Memory System
 The memory system records more than raw conversation history. It stores
 structured institutional knowledge, including prior questions, advisor
 positions, consensus outputs, disagreements, decisions, assumptions, and
@@ -396,28 +383,28 @@ confidence levels.
 This allows later deliberations to be informed by the council's own
 history rather than relying solely on the immediate prompt.
 
-**4.5 Deliberation and Consensus**
-
+### 4.5 Deliberation and Consensus
 A typical deliberation proceeds in structured stages:
 
-**Initial independent responses**
-**↓**
-**Cross-critique**
-**↓**
-**Revision or clarification**
-**↓**
-**Synthesis**
-**↓**
-**Dissent preservation**
-**↓**
-**Memory update**
+```
+Initial independent responses
+↓
+Cross-critique
+↓
+Revision or clarification
+↓
+Synthesis
+↓
+Dissent preservation
+↓
+Memory update
+```
 
 Consensus does not require the erasure of disagreement. The final
 response may contain a majority view, minority objections, unresolved
 uncertainties, and recommended next steps.
 
-**4.6 Dynamic Specialists**
-
+### 4.6 Dynamic Specialists
 Where required, the orchestrator may instantiate temporary specialists
 for a particular problem. These specialists are given narrow roles,
 selected context, relevant tools, and constrained output formats. They
@@ -427,29 +414,29 @@ members of the council.
 This allows the system to add domain focus without turning the core
 architecture into a collection of permanent subject silos.
 
-**4.7 System Loop**
-
+### 4.7 System Loop
 The architecture is cyclical rather than purely transactional. Each
 interaction may update the council's institutional memory, influencing
 future deliberations.
 
-**Question**
-
-> **→ Retrieval**
->
-> **→ Deliberation**
->
-> **→ Consensus**
->
-> **→ Memory Update**
->
-> **→ Future Retrieval**
+```
+Question
+↓ 
+Retrieval
+↓ 
+Deliberation
+↓ 
+Consensus
+↓ 
+Memory Update
+↓ 
+Future Retrieval
+```
 
 Over time, this loop is intended to produce continuity, refinement, and
 accumulated understanding across related questions.
 
-**5. Memory Model**
-
+## 5. Memory Model
 The proposed architecture treats memory as a foundational cognitive
 component rather than a secondary convenience feature. In many current
 LLM systems, memory is implemented primarily as conversational
@@ -465,8 +452,7 @@ historical development through time.
 At a high level, the memory system consists of several interacting
 layers.
 
-**5.1 Episodic Memory**
-
+### 5.1 Episodic Memory
 Episodic memory records the history of individual deliberations and
 interactions. Each episode may include:
 - the original user question
@@ -490,41 +476,31 @@ Episodic memory therefore preserves not only prior interactions, but the
 historical pathways through which institutional understanding develops
 over time.
 
-**5.2 Semantic Memory**
-
-While episodic memory preserves individual interactions, semantic memory
-attempts to extract and organize higher-level knowledge derived from
-repeated deliberation over time.
+### 5.2 Semantic Memory
+While episodic memory preserves individual deliberations and historical interactions, semantic memory attempts to extract, organize, and maintain higher-level institutional understanding derived from repeated reasoning over time.
 
 Examples may include:
 - recurring strategic themes
 - persistent risks
 - stable user preferences
-- relationships between recurring concepts and themes
+- relationships between recurring concepts and domains
 - evolving conceptual models
-- summarized institutional conclusions
+- unresolved tensions or disagreements
+- summarised institutional conclusions
 
-Semantic memory is not treated solely as retrieval of prior text
-fragments. The system attempts to consolidate repeated deliberations
-into higher-level institutional understanding through abstraction,
-summarization, thematic extraction, and historical synthesis.
+Semantic memory is not treated solely as retrieval of isolated prior text fragments. Instead, the institution attempts to consolidate repeated deliberations into more durable forms of contextual understanding through abstraction, summarisation, thematic extraction, historical synthesis, and semantic retrieval mechanisms.
 
-This allows the institution to retain generalized understanding without
-repeatedly traversing entire historical conversations. Future
-deliberations are therefore able to build upon accumulated understanding
-rather than repeatedly restarting from isolated prompts. Over time,
-repeated discussions may reinforce, refine, weaken, or revise elements
-of semantic memory as the institution accumulates additional
-deliberative experience.
+In implementation terms, semantic memory may be realised through embedding-based retrieval systems, vector similarity search, thematic summarisation pipelines, and related contextual retrieval techniques. These mechanisms allow semantically related prior deliberations to be identified and reintroduced into future reasoning processes even when exact terminology differs between discussions.
 
-Unlike simple conversational persistence, semantic memory therefore
-represents an evolving interpretive layer within the institution rather
-than a passive archive of previous exchanges. The objective is not
-perfect historical recall, but the gradual development of durable
-contextual awareness through repeated deliberation.
+While these techniques draw upon technologies related to those used internally by modern language models, the institution’s memory remains external to the participating models themselves. The continuity of the institution therefore resides within the orchestration, retrieval, and memory layers rather than within any individual third-party model provider. Participating models may change over time while the institution itself retains continuity through its accumulated deliberative history.
 
-**5.3 Decisions and Conclusions**
+This architecture also addresses a practical scaling problem. As institutional history expands, repeatedly traversing complete historical conversations becomes increasingly inefficient, expensive, and cognitively noisy. Semantic retrieval instead allows future deliberations to selectively access only the most contextually relevant prior discussions, themes, summaries, conclusions, or unresolved questions associated with the current problem domain.
 
+Future deliberations are therefore able to build upon accumulated institutional understanding rather than repeatedly restarting from isolated prompts. Over time, repeated discussions may reinforce, refine, weaken, revise, or supersede elements of semantic memory as the institution accumulates additional deliberative experience.
+
+Unlike simple conversational persistence, semantic memory therefore represents an evolving interpretive layer within the institution rather than a passive archive of previous exchanges. The objective is not perfect historical recall, but the gradual development of durable contextual awareness through repeated deliberation and institutional continuity.
+
+### 5.3 Decisions and Conclusions
 The system explicitly records significant decisions, recommendations,
 and synthesized conclusions produced through deliberation. These records
 may include:
@@ -542,8 +518,7 @@ decisions as additional evidence or reasoning becomes available.
 This allows the institution's understanding to evolve while preserving
 the historical pathway through which that evolution occurred.
 
-**5.4 Unresolved Questions and Preserved Disagreement**
-
+### 5.4 Unresolved Questions and Preserved Disagreement
 Not all deliberations result in stable consensus. In many complex
 domains, uncertainty, contradiction, and incomplete information remain
 persistent features of the reasoning process.
@@ -564,8 +539,7 @@ By preserving unresolved tension within institutional memory, future
 deliberations are able to revisit prior uncertainty rather than
 repeatedly rediscovering it.
 
-**5.5 Advisor Reliability and Epistemic Tracking**
-
+### 5.5 Advisor Reliability and Epistemic Tracking
 The architecture may optionally maintain historical metadata regarding
 the reliability and behaviour of participating advisors over time.
 
@@ -585,8 +559,7 @@ Over extended interaction periods, this may allow the institution to
 develop a more nuanced understanding of the relative strengths,
 limitations, and behavioural tendencies of its own participants.
 
-**5.6 Memory as an Active Cognitive Process**
-
+### 5.6 Memory as an Active Cognitive Process
 Within the proposed architecture, memory is not treated as a passive
 archive. Retrieval, summarization, reinterpretation, and historical
 comparison form part of the ongoing deliberative process itself.
@@ -598,8 +571,7 @@ This distinction is central to the architecture. The system attempts not
 simply to remember previous conversations, but to develop continuity of
 understanding through time.
 
-**6. Deliberation Model**
-
+## 6. Deliberation Model
 The proposed architecture treats deliberation as a structured cognitive
 process rather than unrestricted interaction between autonomous agents.
 The objective is not to maximize conversational activity, but to improve
@@ -616,8 +588,7 @@ traceability, and epistemic diversity throughout the reasoning process.
 At a high level, a deliberation proceeds through a series of distinct
 phases.
 
-**6.1 Independent Response Phase**
-
+### 6.1 Independent Response Phase
 Deliberation begins with independent responses from participating
 council members. Each advisor receives:
 - the user's original request
@@ -634,8 +605,7 @@ Independent generation also allows the system to surface disagreements,
 competing assumptions, and alternative framings at an early stage of
 deliberation.
 
-**6.2 Critique Phase**
-
+### 6.2 Critique Phase
 Following the initial response phase, participating advisors may review
 and critique the reasoning produced by other council members.
 
@@ -655,8 +625,7 @@ This phase attempts to approximate aspects of peer review, strategic
 discussion, and institutional challenge processes found within human
 organizations.
 
-**6.3 Revision and Clarification**
-
+### 6.3 Revision and Clarification
 Following critique, advisors may revise, clarify, or partially retract
 elements of their earlier reasoning. This stage allows participants to:
 - incorporate valid criticism
@@ -670,8 +639,7 @@ rather than evidence of failure. The architecture assumes that evolving
 understanding is an expected property of collaborative reasoning
 systems.
 
-**6.4 Synthesis Phase**
-
+### 6.4 Synthesis Phase
 Once critique and revision have concluded, the orchestrator or
 designated synthesis participant produces a consolidated response for
 presentation to the user.
@@ -688,8 +656,7 @@ The final synthesis is therefore not intended to function as a simple
 average of advisor outputs. Instead, it represents an interpreted
 consolidation of the deliberative process as a whole.
 
-**6.5 Dissent and Unresolved Uncertainty**
-
+### 6.5 Dissent and Unresolved Uncertainty
 The architecture does not assume that all deliberations should converge
 toward complete consensus. In many complex domains, persistent
 disagreement may represent a rational outcome rather than a failure
@@ -702,8 +669,7 @@ final synthesis and the institutional memory system.
 This allows future deliberations to revisit unresolved questions rather
 than repeatedly rediscovering them from first principles.
 
-**6.6 Confidence Weighting and Historical Context**
-
+### 6.6 Confidence Weighting and Historical Context
 The system may optionally incorporate confidence assessments and
 historical advisor behaviour into the deliberative process.
 
@@ -724,8 +690,7 @@ outputs are necessarily more reliable. Excessive confidence, repeated
 error, or resistance to critique may themselves become historically
 significant institutional signals.
 
-**6.7 Deliberation as Institutional Process**
-
+### 6.7 Deliberation as Institutional Process
 The deliberation model is intended to approximate aspects of long-term
 institutional reasoning rather than unconstrained autonomous
 interaction. Structured phases, preserved disagreement, memory
@@ -737,8 +702,7 @@ organizational process occurring across repeated deliberations through
 time, rather than as a sequence of isolated prompt-response
 transactions.
 
-**6.8 Human Oversight and Outcome Feedback**
-
+### 6.8 Human Oversight and Outcome Feedback
 The human participant is not treated solely as a source of prompts, but
 as an external evaluative component within the institutional reasoning
 process. Users may critique deliberations, reject conclusions, provide
@@ -753,8 +717,7 @@ The architecture therefore treats institutional learning as partially
 dependent upon continued interaction between machine deliberation and
 human judgment rather than assuming fully autonomous epistemic closure.
 
-**6.9 Deliberative Constraints and Token Discipline**
-
+### 6.9 Deliberative Constraints and Token Discipline
 The deliberation model must include explicit limits on participation,
 context size, and deliberation depth. The system should not allow
 unrestricted conversation between agents. Each deliberation should
@@ -779,8 +742,7 @@ expensive, repetitive, and less reliable. Controlled deliberation is
 therefore not merely a cost-management concern, but a core part of
 preserving reasoning quality.
 
-**7. UX Philosophy**
-
+## 7. UX Philosophy
 The proposed architecture treats user interaction not merely as a
 conversational interface, but as participation in an ongoing
 deliberative process. The user experience is therefore designed to
@@ -797,8 +759,7 @@ weaken trust, and create the appearance of unsupported certainty.
 The present architecture instead attempts to make elements of the
 deliberative process visible and inspectable where appropriate.
 
-**7.1 Visible Reasoning**
-
+### 7.1 Visible Reasoning
 The system may expose intermediate stages of deliberation to the user,
 including:
 - initial advisor responses
@@ -821,8 +782,7 @@ This visibility allows users to:
 Reasoning therefore becomes partially inspectable rather than entirely
 opaque.
 
-**7.2 Transparent Consensus**
-
+### 7.2 Transparent Consensus
 Consensus within the institution is not treated as a binary state in
 which disagreement disappears once a final answer has been produced.
 Instead, the system attempts to expose:
@@ -842,8 +802,7 @@ The final synthesis presented to the user may therefore contain:
 This approach attempts to reduce the appearance of false certainty while
 preserving the informational value of disagreement and uncertainty.
 
-**7.3 Memory References and Historical Context**
-
+### 7.3 Memory References and Historical Context
 Where relevant, the system may reference prior deliberations, earlier
 conclusions, or recurring institutional themes during current
 interactions.
@@ -862,8 +821,7 @@ interaction as an isolated exchange.
 The institution therefore exposes elements of its own historical
 continuity as part of the user experience.
 
-**7.4 Traceability**
-
+### 7.4 Traceability
 A central objective of the interface is traceability: the ability to
 understand how and why particular conclusions were reached.
 
@@ -885,8 +843,7 @@ Traceability also supports:
 - identification of recurring biases or assumptions
 - long-term refinement of the institution's reasoning processes
 
-**7.5 Deliberation as Interface**
-
+### 7.5 Deliberation as Interface
 The architecture treats deliberation itself as part of the interface
 rather than hiding it entirely behind a conversational abstraction.
 
@@ -901,8 +858,7 @@ This distinction is central to the philosophy of the system. The
 objective is not merely to produce answers, but to expose elements of
 the reasoning process through which those answers emerge.
 
-**7.6 Human Feedback and Institutional Participation**
-
+### 7.6 Human Feedback and Institutional Participation
 Human participants are not treated solely as sources of prompts or
 passive consumers of generated outputs. Instead, the user forms part of
 the broader institutional reasoning process by providing contextual
@@ -940,8 +896,7 @@ observer of the institution, nor merely as another advisor within the
 council, but as an ongoing participant in the institution's epistemic
 development through time.
 
-**8. Non-Goals**
-
+## 8. Non-Goals
 The proposed architecture is intentionally limited in scope. The
 objective is not to pursue unrestricted autonomous intelligence, but to
 explore whether structured deliberation, institutional memory, and
@@ -951,8 +906,7 @@ transparency of machine-assisted reasoning.
 The following capabilities and interpretations are therefore explicitly
 outside the intended scope of the system.
 
-**8.1 Not Artificial General Intelligence**
-
+### 8.1 Not Artificial General Intelligence
 The system is not intended to constitute artificial general
 intelligence, autonomous consciousness, or self-aware cognition. While
 the architecture may exhibit continuity, memory persistence, and
@@ -964,8 +918,7 @@ The architecture remains fundamentally dependent upon statistical
 language models, retrieval systems, orchestration logic, and human
 supervision.
 
-**8.2 Not Autonomous Employees or Agents**
-
+### 8.2 Not Autonomous Employees or Agents
 The council is not intended to function as a fully autonomous workforce
 capable of operating indefinitely without meaningful human oversight.
 Although the system may assist with reasoning, research, planning, or
@@ -976,8 +929,7 @@ responsibility in high-consequence decision-making.
 Human participation remains a central component of the institution's
 epistemic and strategic grounding.
 
-**8.3 Not Infinite Agent Swarms**
-
+### 8.3 Not Infinite Agent Swarms
 The architecture does not assume that increasing the number of
 participating agents necessarily improves reasoning quality. Unbounded
 multi-agent interaction frequently produces redundancy, instability,
@@ -993,8 +945,7 @@ The proposed system instead favours:
 The objective is disciplined institutional reasoning rather than
 uncontrolled emergent behaviour.
 
-**8.4 Not Unrestricted Self-Modification**
-
+### 8.4 Not Unrestricted Self-Modification
 The institution is not intended to autonomously rewrite its own core
 architecture, governance structures, or memory processes without human
 supervision.
@@ -1008,8 +959,7 @@ governed.
 This distinction attempts to preserve traceability, stability, and human
 accountability over extended operational periods.
 
-**8.5 Not Perfect Objectivity or Truth**
-
+### 8.5 Not Perfect Objectivity or Truth
 The architecture does not assume that consensus between multiple models
 guarantees correctness. Deliberation may reduce certain forms of error,
 expose disagreement, or improve reasoning robustness, but participating
@@ -1024,8 +974,7 @@ Institutional consensus should therefore be interpreted as a structured
 synthesis of available reasoning rather than an authoritative source of
 objective truth.
 
-**8.6 Not Replacement for Human Judgment**
-
+### 8.6 Not Replacement for Human Judgment
 The system is designed to support human reasoning rather than replace
 it. Final responsibility for strategic decisions, ethical
 interpretation, legal accountability, and real-world action remains with
@@ -1042,8 +991,7 @@ attempts to remain focused on persistent collaborative reasoning rather
 than drifting toward increasingly unconstrained and poorly interpretable
 forms of machine agency.
 
-**9. Development Roadmap**
-
+## 9. Development Roadmap
 The architecture is intended to evolve incrementally through a series of
 increasingly capable deliberative stages. Early phases prioritize
 stability, visibility, and constrained experimentation before
@@ -1129,8 +1077,7 @@ The objective is to maintain human participation as part of the
 institution's ongoing epistemic development rather than treating the
 user solely as a prompt source.
 
-**10. Open Questions**
-
+## 10. Open Questions
 The proposed architecture remains exploratory in several important
 respects. While the system attempts to introduce more persistent and
 deliberative forms of machine-assisted reasoning, many aspects of
@@ -1140,8 +1087,7 @@ philosophically.
 The following questions are therefore treated as active areas of
 investigation rather than solved problems.
 
-**10.1 Memory Corruption and Semantic Drift**
-
+### 10.1 Memory Corruption and Semantic Drift
 As institutional memory accumulates over extended periods of
 interaction, there is a risk that summarisation, abstraction, and
 repeated reinterpretation may gradually distort earlier conclusions or
@@ -1158,8 +1104,7 @@ It remains unclear how persistent institutions should balance
 abstraction efficiency against preservation of historical fidelity over
 long operational timescales.
 
-**10.2 Advisor Drift**
-
+### 10.2 Advisor Drift
 Persistent advisors may gradually develop behavioural tendencies through
 accumulated context, repeated prompting patterns, memory weighting, or
 orchestration bias.
@@ -1174,8 +1119,7 @@ Potential risks include:
 The extent to which persistent advisor identities remain stable, useful,
 or distinguishable through time remains an open question.
 
-**10.3 Consensus Collapse and False Agreement**
-
+### 10.3 Consensus Collapse and False Agreement
 Consensus mechanisms may unintentionally suppress productive
 disagreement or create the appearance of institutional certainty where
 significant uncertainty remains.
@@ -1190,8 +1134,7 @@ Particular risks include:
 Determining how institutions should preserve disagreement without
 becoming permanently indecisive remains unresolved.
 
-**10.4 Scaling Deliberation**
-
+### 10.4 Scaling Deliberation
 The architecture intentionally favours bounded deliberation over
 unrestricted agent proliferation. However, it remains uncertain how
 institutional reasoning quality scales as:
@@ -1206,8 +1149,7 @@ More deliberation may not necessarily produce better reasoning.
 Excessive institutional complexity may instead reduce interpretability,
 increase token cost, and weaken cognitive coherence.
 
-**10.5 Retrieval Quality and Context Selection**
-
+### 10.5 Retrieval Quality and Context Selection
 The quality of institutional reasoning is heavily dependent upon
 retrieval quality. Poor retrieval may:
 - surface irrelevant history
@@ -1219,8 +1161,7 @@ retrieval quality. Poor retrieval may:
 Determining which memories should be retrieved, summarised, prioritised,
 or forgotten remains a central architectural challenge.
 
-**10.6 Contradictory Histories and Revision**
-
+### 10.6 Contradictory Histories and Revision
 Over long periods of interaction, institutions may accumulate
 conflicting conclusions, revised assumptions, contradictory
 recommendations, and incompatible strategic interpretations.
@@ -1235,8 +1176,7 @@ The system therefore requires mechanisms for:
 How institutions should maintain continuity while allowing substantial
 conceptual revision remains unresolved.
 
-**10.7 Human Dependence and Epistemic Authority**
-
+### 10.7 Human Dependence and Epistemic Authority
 As deliberative systems become more capable and persistent, users may
 increasingly defer to institutional consensus in domains involving
 strategic, financial, technical, or personal decisions.
@@ -1252,8 +1192,7 @@ The architecture attempts to preserve transparency, disagreement
 visibility, and human oversight, but the long-term social and
 behavioural effects of persistent deliberative systems remain uncertain.
 
-**10.8 Institutional Identity Through Time**
-
+### 10.8 Institutional Identity Through Time
 It remains unclear at what point a persistent deliberative institution
 develops a stable identity distinguishable from the underlying models
 composing it.
@@ -1269,8 +1208,7 @@ Whether institutional continuity represents merely accumulated state or
 a more meaningful form of persistent cognitive structure remains an open
 philosophical question.
 
-**10.9 Evaluation and Comparative Testing**
-
+### 10.9 Evaluation and Comparative Testing
 It remains unclear how best to evaluate a persistent deliberative
 institution against existing single-model chatbots, agent frameworks, or
 manually coordinated multi-model workflows.
@@ -1311,7 +1249,7 @@ project therefore treats experimentation, interpretability, and bounded
 development as more important than premature claims of autonomous
 intelligence or general reasoning capability.
 
-**Appendix A --- Acknowledgements**
+## Appendix A --- Acknowledgements
 
 Portions of the drafting, refinement, and editorial development of this
 document were assisted through iterative discussion with large language
@@ -1324,7 +1262,7 @@ The underlying system philosophy, architectural direction,
 implementation strategy, and core conceptual framework remain the
 author's own.
 
-**Appendix B --- Selected References**
+## Appendix B --- Selected References
 
 **Foundational Language Model Architecture**
 

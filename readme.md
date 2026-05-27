@@ -5,7 +5,6 @@ Persistent institutional deliberation for large language model systems.
 CouncilOfCrows explores whether multiple collaborating LLMs, organised as a structured advisory council with persistent memory and transparent deliberation, can produce more reliable and historically grounded reasoning than isolated prompt-response systems.
 
 The project focuses on:
-
 - persistent institutional memory
 - structured deliberation
 - disagreement preservation

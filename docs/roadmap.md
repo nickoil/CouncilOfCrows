@@ -18,18 +18,17 @@ The intention is to:
 Each phase should produce a stable and demonstrable system before
 additional architectural layers are introduced.
 
-**Phase 1 — Foundation**
+## Phase 1 — Foundation
 
-**Goal**
-
+### Goal
 Docker stack running, one LLM call functioning, response persisted.
 
 The objective of this phase is architectural grounding rather than
 sophistication.
 
-**Infrastructure**
+### Infrastructure
 
-**Stack**
+#### Stack
 
 - Docker Compose
 - PostgreSQL (pgvector image)
@@ -38,7 +37,7 @@ sophistication.
 - SvelteKit frontend
 - Nginx reverse proxy
 
-**Database**
+#### Database
 
 - enable pgvector extension via migration
 - create:
@@ -46,13 +45,13 @@ sophistication.
   - advisors
   - advisor_responses
 
-**Model Access**
+#### Model Access
 
 - configure openai-php/client
 - route requests through OpenRouter
 - initial support for multiple providers
 
-**API**
+### API
 
 **Initial Endpoint**
 
@@ -61,21 +60,21 @@ sophistication.
 - one model response
 - persisted to database
 
-**UI**
+### UI
 
 - text input
 - submit button
 - displayed response
 - session persistence
 
-**Done When**
+### Done When
 
 A user can submit a question, receive a response, and retrieve the
 stored session from PostgreSQL.
 
-**Phase 2 — Multiple Advisors, One Round**
+## Phase 2 — Multiple Advisors, One Round
 
-**Goal**
+### Goal
 
 Introduce a persistent council structure with multiple independent
 advisor responses.
@@ -83,7 +82,7 @@ advisor responses.
 The objective is to establish bounded deliberation without critique or
 recursive interaction.
 
-**Advisors**
+### Advisors
 
 **Seed Initial Roles**
 
@@ -96,7 +95,7 @@ Examples:
 
 Roles should remain cognitive rather than domain-specific.
 
-**Orchestration**
+### Orchestration
 
 **Introduce Orchestrator**
 
@@ -113,16 +112,16 @@ The orchestrator:
 - dispatch as batch
 - Bus::batch() used for completion detection
 
-**Deliberation Model**
+### Deliberation Model
 
 **Initial Structure**
 
-User Question
-↓
+User Question 
+→
 Orchestrator
-↓
+→
 Independent Advisor Responses
-↓
+→
 Consensus Synthesis
 
 **Constraints**
@@ -132,25 +131,24 @@ Consensus Synthesis
 - strict token budgets
 - no advisor-to-advisor interaction yet
 
-**UI**
+### UI
 
 - advisor cards
 - independent responses visible separately
 - consensus displayed distinctly
 
-**Done When**
+### Done When
 
 One question produces multiple independent advisor responses and a
 synthesised consensus.
 
-**Phase 3 — Real-Time Deliberation UI**
+## Phase 3 — Real-Time Deliberation UI
 
-**Goal**
+### Goal
 
-Expose deliberation as a visible institutional process rather than a
-hidden batch operation.
+Expose deliberation as a visible institutional process rather than a hidden batch operation.
 
-**Infrastructure**
+### Infrastructure
 
 **Realtime Layer**
 
@@ -158,13 +156,13 @@ hidden batch operation.
 - WebSocket broadcasting
 - live session channels
 
-**Behaviour**
+### Behaviour
 
 - advisor responses appear incrementally
 - pending/completed states visible
 - synthesis appears separately
 
-**UX Philosophy**
+### UX Philosophy
 
 This phase introduces:
 - visible reasoning
@@ -172,25 +170,25 @@ This phase introduces:
 - transparent deliberation
 rather than presenting the institution as a single opaque assistant.
 
-**Constraints**
+### Constraints
 
 - bounded response lengths
 - bounded advisor count
 - no uncontrolled conversational loops
 
-**Done When**
+### Done When
 
 The user can observe deliberation unfolding live as advisors complete
 their responses.
 
-**Phase 4 — Structured Debate Rounds**
+## Phase 4 — Structured Debate Rounds
 
-**Goal**
+### Goal
 
 Move from parallel response generation toward explicit staged
 deliberation.
 
-**Deliberation Stages**
+### Deliberation Stages
 
 **Round 1 — Independent Responses**
 
@@ -210,7 +208,7 @@ Critique should emphasise:
 - omitted considerations
 - hallucination risk
 
-**Final Synthesis**
+### Final Synthesis
 
 The chairperson/orchestrator produces:
 - consensus summary
@@ -218,7 +216,7 @@ The chairperson/orchestrator produces:
 - unresolved questions
 - confidence indicators
 
-**Architecture**
+### Architecture
 
 **Job Chaining**
 
@@ -226,7 +224,7 @@ The chairperson/orchestrator produces:
 - Round 2 critique batch
 - synthesis job
 
-**New Persistence**
+### New Persistence
 
 Store:
 - critique rounds
@@ -234,51 +232,43 @@ Store:
 - dissent
 - synthesis history
 
-**UI**
+### UI
 
 - round separators
 - visible critiques
 - disagreement indicators
 - synthesis timeline
 
-**Constraints**
+### Constraints
 
 - bounded critique rounds
 - no unrestricted advisor recursion
 - hard token ceilings per phase
 
-**Done When**
+### Done When
 
-The institution performs visible multi-stage deliberation with critique
-and synthesis.
+The institution performs visible multi-stage deliberation with critique and synthesis.
 
-**Phase 5 — Subjects and Institutional Memory**
+## Phase 5 — Subjects and Institutional Memory
 
-**Goal**
+### Goal
 
-Introduce persistent institutional continuity organised around subject
-domains.
+Introduce persistent institutional continuity organised around subject domains.
 
-**Subject Structure**
-
-**Add**
+### Subject Organisation
 
 - subjects table
 - subject selector
 - subject-scoped sessions
 
-**Session History**
-
-**Views**
+### Views
 
 - subject history page
 - session detail page
 - full deliberation transcript
 - collapsible rounds
 
-**Memory Model**
-
-**Episodic Memory**
+### Episodic Memory
 
 Store:
 - questions
@@ -288,36 +278,31 @@ Store:
 - dissent
 - timestamps
 
-The institution should now begin developing historical continuity rather
-than isolated conversations.
+The institution should now begin developing historical continuity rather than isolated conversations.
 
-**Retrieval**
-
-**Initial Retrieval**
+### Initial Retrieval
 
 - retrieve prior sessions by subject
 - inject summaries into advisor prompts
 - preserve explicit memory references
 
-**UI**
+### UI
 
 - visible historical references
 - linked prior deliberations
 - “drawing on previous discussions” indicators
 
-**Done When**
+### Done When
 
-The council demonstrates visible continuity between discussions within a
-subject area.
+The council demonstrates visible continuity between discussions within a subject area.
 
-**Phase 6 — Cost Tracking and Deliberative Constraints**
+## Phase 6 — Cost Tracking and Deliberative Constraints
 
-**Goal**
+### Goal
 
-Prevent runaway token growth and maintain bounded institutional
-reasoning.
+Prevent runaway token growth and maintain bounded institutional reasoning.
 
-**Cost Tracking**
+### Cost Tracking
 
 Track:
 - prompt tokens
@@ -326,7 +311,7 @@ Track:
 - cost per session
 - monthly cost totals
 
-**Deliberative Constraints**
+### Deliberative Constraints
 
 **Governance**
 
@@ -337,7 +322,7 @@ The orchestrator should enforce:
 - specialist limits
 - session token budgets
 
-**Graceful Degradation**
+### Graceful Degradation
 
 If budgets are exceeded:
 - reduce advisor participation
@@ -345,24 +330,23 @@ If budgets are exceeded:
 - compress retrieval context
 - return partial consensus with explicit limitations
 
-**UI**
+### UI
 
 - visible session costs
 - estimated deliberation cost
 - warning thresholds
 
-**Done When**
+### Done When
 
 Every deliberation has measurable and bounded operational cost.
 
-**Phase 7 — Semantic Memory**
+## Phase 7 — Semantic Memory
 
-**Goal**
+### Goal
 
-Allow the institution to consolidate repeated deliberations into
-higher-level understanding.
+Allow the institution to consolidate repeated deliberations into higher-level understanding.
 
-**Semantic Memory**
+### Semantic Memory
 
 **Introduce**
 
@@ -371,7 +355,7 @@ higher-level understanding.
 - thematic extraction
 - memory consolidation
 
-**Embeddings**
+### Embeddings
 
 **Suggested Approach**
 
@@ -380,7 +364,7 @@ higher-level understanding.
 - Ollama local embeddings
 - nomic-embed-text
 
-**Consolidation**
+### Consolidation
 
 Rather than storing only raw transcripts, the institution should begin
 extracting:
@@ -391,32 +375,32 @@ extracting:
 - evolving conclusions
 - unresolved tensions
 
-**Retrieval Behaviour**
+### Retrieval Behaviour
 
 Before each deliberation:
 - retrieve semantically related prior discussions
 - inject distilled institutional summaries
 - preserve visible memory references
 
-**UX**
+### UX
 
 - visible semantic memory references
 - retrieved memory cards
 - historical continuity indicators
 
-**Done When**
+### Done When
 
-The institution demonstrates accumulated contextual understanding across
-repeated discussions.
+The institution demonstrates accumulated contextual understanding across repeated discussions.
 
-**Phase 8 — Depth Modes and Specialist Participation**
+**Nick Note**: read more on semantic retrieval
 
-**Goal**
+## Phase 8 — Depth Modes and Specialist Participation
 
-Allow users to consciously trade off deliberative depth, cost, and
-expertise.
+### Goal
 
-**Depth Modes**
+Allow users to consciously trade off deliberative depth, cost, and expertise.
+
+### Depth Modes
 
 **Quick**
 
@@ -437,7 +421,7 @@ expertise.
 - expanded retrieval
 - specialist participation
 
-**Dynamic Specialists**
+### Dynamic Specialists
 
 **Specialist Model**
 
@@ -455,32 +439,32 @@ Specialists:
 - specialist domain requirement
 - explicit user request
 
-**UI**
+### UI
 
 - mode selector
 - cost/time estimates
 - specialist participation indicators
 - explicit deep-mode confirmation
 
-**Constraints**
+### Constraints
 
 - bounded specialist lifespan
 - token-restricted outputs
 - orchestrator-controlled spawning
 
-**Done When**
+### Done When
 
 Users can deliberately control reasoning depth and temporary expertise
 participation.
 
-**Phase 9 — Epistemic Tracking and Hallucination Mitigation**
 
-**Goal**
+## Phase 9 — Epistemic Tracking and Hallucination Mitigation
 
-Make uncertainty, disagreement, and historical reasoning quality visible
-institutional properties.
+### Goal
 
-**Structured Outputs**
+Make uncertainty, disagreement, and historical reasoning quality visible institutional properties.
+
+### Structured Outputs
 
 Require:
 - confidence estimates
@@ -488,7 +472,7 @@ Require:
 - supporting assumptions
 - evidence references
 
-**Deliberation Behaviour**
+### Deliberation Behaviour
 
 The orchestrator should:
 - detect disagreement patterns
@@ -496,7 +480,7 @@ The orchestrator should:
 - preserve unresolved tensions
 - avoid false consensus generation
 
-**Tracking**
+### Tracking
 
 Store:
 - advisor confidence histories
@@ -505,29 +489,28 @@ Store:
 - revision patterns
 - historical reliability indicators
 
-**UI**
+### UI
 
 - confidence badges
 - disagreement warnings
 - revision timelines
 - epistemic traceability indicators
 
-**Done When**
+### Done When
 
-Disagreement, uncertainty, and historical reasoning quality become
-visible institutional features.
+Disagreement, uncertainty, and historical reasoning quality become visible institutional features.
 
-**Phase 10 — Human Feedback and Institutional Governance**
+---
 
-**Goal**
+## Phase 10 — Human Feedback and Institutional Governance
 
-Integrate human participants into the institution’s epistemic
-development.
+### Goal
 
-The user should function not merely as a prompt source, but as an
-ongoing institutional participant.
+Integrate human participants into the institution’s epistemic development.
 
-**Feedback Types**
+The user should function not merely as a prompt source, but as an ongoing institutional participant.
+
+### Feedback Types
 
 **Outcome Feedback**
 
@@ -561,7 +544,7 @@ Users may:
 - flag weak deliberations
 - retain unresolved disagreement
 
-**Governance**
+### Governance
 
 Human approval required for:
 - advisor role changes
@@ -570,19 +553,19 @@ Human approval required for:
 - specialist permissions
 - institutional constraint changes
 
-**UI**
+### UI
 
 - feedback controls
 - institutional memory management
 - governance dashboard
 - advisor performance views
 
-**Done When**
+### Done When
 
 Human feedback becomes part of institutional memory and long-term
 epistemic development.
 
-**Closing Principle**
+## Closing Principle
 
 The roadmap intentionally prioritises gradual capability expansion over
 premature complexity. Each phase should produce a stable, observable,
