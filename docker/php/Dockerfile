@@ -32,5 +32,9 @@ RUN echo "upload_max_filesize=20M" >> /usr/local/etc/php/conf.d/custom.ini \
 
 WORKDIR /var/www/backend
 
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
+
 # Default: run PHP-FPM (worker overrides this via compose command:)
 CMD ["php-fpm"]

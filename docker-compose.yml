@@ -14,7 +14,7 @@ services:
       - ./certs:/etc/nginx/ssl:ro
     depends_on:
       - backend
-      - frontend
+      #- frontend
     networks:
       - thinkertanker
     restart: unless-stopped
@@ -28,6 +28,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./backend:/var/www/backend
+      - laravel-vendor:/var/www/backend/vendor
     environment:
       APP_ENV: local
       APP_KEY: ${APP_KEY}
@@ -77,6 +78,7 @@ services:
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
       OPENROUTER_BASE_URI: https://openrouter.ai/api/v1
       QUEUE_CONNECTION: redis
+      CACHE_STORE: redis
     depends_on:
       db:
         condition: service_healthy
@@ -89,19 +91,20 @@ services:
   # ─────────────────────────────────────────────
   # SvelteKit – dev server (vite)
   # ─────────────────────────────────────────────
-  frontend:
-    build:
-      context: ./docker/frontend
-      dockerfile: Dockerfile
-    volumes:
-      - ./frontend:/app
-    environment:
-      PUBLIC_API_BASE: http://nginx/api
-    ports:
-      - "5173:5173"
-    networks:
-      - thinkertanker
-    restart: unless-stopped
+  # for dev running directly with npm run dev
+  #frontend:
+  #  build:
+  #    context: ./docker/frontend
+  #    dockerfile: Dockerfile
+  #  volumes:
+  #    - ./frontend:/app
+  #  environment:
+  #    PUBLIC_API_BASE: http://nginx/api
+  #  ports:
+  #    - "5173:5173"
+  #  networks:
+  #    - thinkertanker
+  #  restart: unless-stopped
 
   # ─────────────────────────────────────────────
   # PostgreSQL 16 + pgvector
@@ -149,3 +152,4 @@ networks:
 volumes:
   pgdata:
   redisdata:
+  laravel-vendor:
