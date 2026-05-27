@@ -6,4 +6,5 @@ frontend/.svelte-kit/
 frontend/build/
 pgdata/
 dev/
+certs/
 
