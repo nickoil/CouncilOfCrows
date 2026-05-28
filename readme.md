@@ -47,4 +47,4 @@ The project prioritises:
 
 ## Author
 
-Nick Casey
+Nick Casey <nickoil@hotmail.com>

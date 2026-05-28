@@ -562,8 +562,7 @@ Human approval required for:
 
 ### Done When
 
-Human feedback becomes part of institutional memory and long-term
-epistemic development.
+Human feedback becomes part of institutional memory and long-term epistemic development.
 
 ## Closing Principle
 
