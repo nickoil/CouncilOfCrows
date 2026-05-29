@@ -8,9 +8,7 @@
     /** @type {string | null} */
     let error    = $state(null);
 
-    /** @param {SubmitEvent} e */
-    async function handleSubmit(e) {
-        e.preventDefault();
+    async function submitQuestion() {
         if (!question.trim()) return;
 
         loading = true;
@@ -26,6 +24,23 @@
             loading = false;
         }
     }
+
+    /** @param {SubmitEvent} e */
+    async function handleSubmit(e) {
+        e.preventDefault();
+        await submitQuestion();
+    }
+
+    /** @param {KeyboardEvent} e */
+    function handleKeyDown(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+
+            if (!loading && question.trim()) {
+                void submitQuestion();
+            }
+        }
+    }
 </script>
 
 <form onsubmit={handleSubmit} class="flex flex-col gap-4">
@@ -34,6 +49,7 @@
         rows="4"
         placeholder="Ask the council a question…"
         disabled={loading}
+        onkeydown={handleKeyDown}
         class="w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
     ></textarea>
 

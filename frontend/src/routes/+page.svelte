@@ -24,6 +24,7 @@
         response = r;
         subscribe(r.id);
         refreshSessions();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     /** @param {number} sessionId */
@@ -67,6 +68,7 @@
         <SessionList {sessions} onselect={(/** @type {import('$lib/helpers/api.js').CouncilSession} */ s) => {
             response = s;
             subscribe(s.id);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }} />
     </section>
 </main>
