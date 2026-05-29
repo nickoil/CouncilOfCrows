@@ -1249,6 +1249,31 @@ project therefore treats experimentation, interpretability, and bounded
 development as more important than premature claims of autonomous
 intelligence or general reasoning capability.
 
+## Related Work
+
+### 11.1 LLM Council
+
+Andrej Karpathy's LLM Council demonstrates a practical multi-model deliberation architecture in which multiple language models independently generate responses, review one another's reasoning, and contribute to a synthesised final answer. The project provides a compelling example of structured model deliberation and highlights the potential value of multi-model critique over reliance upon a single model.
+
+The present architecture shares this interest in collaborative machine reasoning, but pursues a different primary objective. Rather than focusing solely on improving the quality of individual deliberations, CouncilOfCrows explores the concept of a persistent deliberative institution whose knowledge, conclusions, disagreements, and historical context accumulate over time.
+
+Accordingly, the architecture extends beyond deliberation alone to investigate institutional memory, semantic retrieval, historical continuity, disagreement preservation, advisor reliability, and human-guided institutional development. In this model, individual deliberations are viewed not only as mechanisms for producing answers, but also as contributions to the ongoing development of the institution itself.
+
+### 11.2 Council-Based Deliberation Systems
+
+The increasing availability of high-capability language models has led to growing experimentation with council-based and multi-model deliberation architectures. These systems typically employ multiple language models, personas, or specialist participants to review, critique, rank, and synthesise responses in pursuit of improved answer quality, robustness, or domain-specific expertise.
+
+While implementation details vary, many of these architectures share a common pattern in which independent participants contribute perspectives that are subsequently aggregated through a synthesis or consensus process. Such systems demonstrate growing interest in structured machine deliberation as an alternative to reliance upon a single model response.
+
+CouncilOfCrows shares this interest in collaborative machine reasoning and benefits from many of the same underlying techniques, including orchestration, structured critique, specialist participation, and consensus generation. However, the primary focus of the present architecture differs in its emphasis on persistence rather than transaction.
+
+Many existing council-based systems treat deliberation as a self-contained process whose purpose is to improve the quality of an individual answer. CouncilOfCrows instead explores the concept of a persistent deliberative institution in which individual deliberations contribute to a broader and continuously evolving body of institutional memory. Particular emphasis is therefore placed upon semantic memory, historical continuity, disagreement preservation, retrieval-driven contextualisation, advisor reliability, and human-guided institutional development.
+
+Accordingly, the council itself is viewed not as the end product, but as one component within a larger institutional architecture whose purpose is the accumulation, refinement, and application of knowledge over time.
+
+
+
+
 ## Appendix A --- Acknowledgements
 
 Portions of the drafting, refinement, and editorial development of this
@@ -1263,6 +1288,8 @@ implementation strategy, and core conceptual framework remain the
 author's own.
 
 ## Appendix B --- Selected References
+
+### B.1 Academic References
 
 **Foundational Language Model Architecture**
 
@@ -1283,10 +1310,6 @@ Model Society.*
 Wu, Q. et al. (2023).\
 *AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent
 Conversation.*
-
-[LangGraph
-Documentation](https://langchain-ai.github.io/langgraph/?utm_source=chatgpt.com)\
-Relevant to stateful orchestration and graph-based agent workflows.
 
 **Retrieval and Memory Systems**
 
@@ -1317,3 +1340,16 @@ These references are not intended as an exhaustive literature review,
 but as representative works relevant to multi-agent systems,
 retrieval-augmented reasoning, institutional memory, deliberative
 architectures, and persistent machine-assisted cognition.
+
+### B.2 Online Resources and Related Projects
+
+[LLM Council — Andrej Karpathy](https://github.com/karpathy/llm-council)\
+Multi-model deliberation architecture with independent responses and synthesised consensus.
+
+[Awesome LLM Council Projects — Daniel Rosehill](https://github.com/danielrosehill/Awesome-LLM-Council-Projects)\
+Curated collection of council-based and multi-model deliberation projects.
+
+[LangGraph Documentation](https://langchain-ai.github.io/langgraph/)\
+Relevant to stateful orchestration and graph-based agent workflows.
+
+

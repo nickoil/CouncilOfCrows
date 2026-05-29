@@ -30,8 +30,10 @@ services:
       - ./backend:/var/www/backend
       - laravel-vendor:/var/www/backend/vendor
     environment:
+      APP_NAME: "Council of Crows"
       APP_ENV: local
       APP_KEY: ${APP_KEY}
+      APP_URL: ${APP_URL}
       DB_CONNECTION: pgsql
       DB_HOST: db
       DB_PORT: 5432
@@ -41,7 +43,8 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
-      OPENROUTER_BASE_URI: https://openrouter.ai/api/v1
+      OPENROUTER_BASE_URI: ${OPENROUTER_BASE_URI}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
       QUEUE_CONNECTION: redis
       CACHE_STORE: redis
       SESSION_DRIVER: redis
@@ -66,7 +69,9 @@ services:
       - ./backend:/var/www/backend
     environment:
       APP_ENV: local
+      APP_NAME: ${APP_NAME}
       APP_KEY: ${APP_KEY}
+      APP_URL: ${APP_URL}
       DB_CONNECTION: pgsql
       DB_HOST: db
       DB_PORT: 5432
@@ -76,7 +81,8 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
-      OPENROUTER_BASE_URI: https://openrouter.ai/api/v1
+      OPENROUTER_BASE_URI: ${OPENROUTER_BASE_URI}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
       QUEUE_CONNECTION: redis
       CACHE_STORE: redis
     depends_on:
