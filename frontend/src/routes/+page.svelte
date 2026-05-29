@@ -1,7 +1,7 @@
 <script>
     import { onMount }      from 'svelte';
     import AskForm          from '$lib/components/AskForm.svelte';
-    import AdvisorResponse  from '$lib/components/AdvisorResponse.svelte';
+    import CouncilView      from '$lib/components/CouncilView.svelte';
     import SessionList      from '$lib/components/SessionList.svelte';
     import { getSessions }  from '$lib/helpers/api.js';
 
@@ -20,14 +20,14 @@
     onMount(refreshSessions);
 </script>
 
-<main class="mx-auto max-w-2xl px-4 py-12">
+<main class="mx-auto max-w-4xl px-4 py-12">
     <h1 class="mb-8 text-2xl font-semibold text-gray-900">Council of Crows</h1>
 
     <AskForm onresult={handleResult} />
 
     {#if response}
         <div class="mt-8">
-            <AdvisorResponse {response} />
+            <CouncilView session={response} />
         </div>
     {/if}
 

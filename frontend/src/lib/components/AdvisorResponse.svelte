@@ -1,20 +1,13 @@
 <script>
-    let { response } = $props();
+    let { advisorResponse } = $props();
 </script>
 
-<div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
-    <p class="mb-3 text-xs text-gray-400">
-        Model: <span class="font-medium text-gray-500">{response.model}</span>
-        {#if response.usage?.total_tokens}
-            &middot; {response.usage.total_tokens} tokens
-        {/if}
-    </p>
-
-    <blockquote class="mb-4 border-l-4 border-indigo-400 pl-4 text-sm text-gray-600 italic">
-        {response.question}
-    </blockquote>
-
-    <div class="prose prose-sm max-w-none text-gray-800">
-        {response.answer}
+<div class="rounded border border-gray-200 bg-gray-50 p-3">
+    <div class="mb-2 flex items-start justify-between gap-2">
+        <span class="text-sm font-semibold text-gray-800">
+            {advisorResponse.advisor?.name ?? 'Advisor'}
+        </span>
+        <span class="shrink-0 text-xs text-gray-400">{advisorResponse.model_used}</span>
     </div>
+    <p class="text-sm text-gray-700 whitespace-pre-wrap">{advisorResponse.content}</p>
 </div>

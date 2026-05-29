@@ -9,8 +9,7 @@ class SessionsController extends Controller
 {
     public function index(): JsonResponse
     {
-        $sessions = BoardSession::with('advisorResponses')
-            ->latest()
+        $sessions = BoardSession::latest()
             ->limit(20)
             ->get()
             ->map(fn ($s) => [
@@ -18,8 +17,6 @@ class SessionsController extends Controller
                 'question'   => $s->question,
                 'status'     => $s->status,
                 'created_at' => $s->created_at,
-                'answer'     => $s->advisorResponses->first()?->content,
-                'model'      => $s->advisorResponses->first()?->model_used,
             ]);
 
         return response()->json($sessions);
@@ -27,21 +24,8 @@ class SessionsController extends Controller
 
     public function show(BoardSession $session): JsonResponse
     {
-        $session->load('advisorResponses');
+        $session->load('advisorResponses.advisor');
 
-        $response = $session->advisorResponses->first();
-
-        return response()->json([
-            'session_id' => $session->id,
-            'question'   => $session->question,
-            'status'     => $session->status,
-            'created_at' => $session->created_at,
-            'answer'     => $response?->content,
-            'model'      => $response?->model_used,
-            'usage'      => $response ? [
-                'prompt_tokens'     => $response->prompt_tokens,
-                'completion_tokens' => $response->completion_tokens,
-            ] : [],
-        ]);
+        return response()->json(AskController::formatSession($session));
     }
 }
