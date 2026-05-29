@@ -1,0 +1,6 @@
+{
+  "intelephense.environment.includePaths": [
+    "backend/vendor",
+    "backend/vendor/openai-php/client/src"
+  ]
+}

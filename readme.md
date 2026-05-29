@@ -26,6 +26,17 @@ Current focus:
 - advisor orchestration
 - structured deliberation
 
+## Development Notes
+
+The Docker Compose stack currently defines a fixed five-worker Laravel queue pool:
+- `worker`
+- `worker-2`
+- `worker-3`
+- `worker-4`
+- `worker-5`
+
+This is the pool that enables advisor-level parallelism for a single session. To change deliberation concurrency in development, edit the worker service count in [docker-compose.yml](docker-compose.yml) rather than relying on an ad hoc `docker compose up --scale ...` command.
+
 ## Documents
 
 - `/docs/foundation.md` — architectural philosophy and system model

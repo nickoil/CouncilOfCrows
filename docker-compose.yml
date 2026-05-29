@@ -70,7 +70,7 @@ services:
   # ─────────────────────────────────────────────
   # Laravel Queue Worker
   # ─────────────────────────────────────────────
-  worker:
+  worker: &worker-base
     build:
       context: ./docker/php
       dockerfile: Dockerfile
@@ -114,6 +114,18 @@ services:
     networks:
       - councilofcrows
     restart: unless-stopped
+
+  worker-2:
+    <<: *worker-base
+
+  worker-3:
+    <<: *worker-base
+
+  worker-4:
+    <<: *worker-base
+
+  worker-5:
+    <<: *worker-base
 
   # ─────────────────────────────────────────────
   # SvelteKit – dev server (vite)

@@ -34,7 +34,7 @@
         unsubscribe = subscribeToSession(sessionId, (event) => {
             response = mergeSessionUpdate(response, event);
 
-            if (['advisor_completed', 'completed', 'failed'].includes(event.progress?.phase ?? '')) {
+            if (['advisor_completed', 'advisor_failed', 'completed', 'failed'].includes(event.progress?.phase ?? '')) {
                 void getSession(sessionId).then((session) => {
                     response = session;
                 });
