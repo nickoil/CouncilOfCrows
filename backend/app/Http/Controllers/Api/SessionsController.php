@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\BoardSession;
+use App\Support\SessionPresenter;
 use Illuminate\Http\JsonResponse;
 
 class SessionsController extends Controller
@@ -24,8 +25,6 @@ class SessionsController extends Controller
 
     public function show(BoardSession $session): JsonResponse
     {
-        $session->load('advisorResponses.advisor');
-
-        return response()->json(AskController::formatSession($session));
+        return response()->json(SessionPresenter::present($session));
     }
 }

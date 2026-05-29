@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use App\Events\CouncilSessionUpdated;
 use App\Models\Advisor;
 use App\Models\AdvisorResponse;
 use App\Models\BoardSession;
+use App\Support\SessionBroadcastPayload;
+use App\Support\SessionPresenter;
 use Illuminate\Support\Facades\Log;
 use OpenAI\Client as OpenAIClient;
 use Psr\Http\Message\ResponseInterface;
@@ -13,11 +16,11 @@ class Orchestrator
 {
     public function __construct(private readonly OpenAIClient $openai) {}
 
-    public function deliberate(string $question): BoardSession
+    public function deliberate(BoardSession $session): BoardSession
     {
-        $session = BoardSession::create(['question' => $question, 'status' => 'processing']);
-
         try {
+            $session->update(['status' => 'processing']);
+
             $advisors = Advisor::where('active', true)
                 ->where('role', '!=', 'chair')
                 ->orderBy('id')
@@ -34,7 +37,25 @@ class Orchestrator
                 'advisor_count' => $advisors->count(),
             ]);
 
+            $this->broadcastUpdate($session, [
+                'phase'               => 'started',
+                'completed_advisors'  => 0,
+                'total_advisors'      => $advisors->count(),
+            ]);
+
             foreach ($advisors as $index => $advisor) {
+                $this->broadcastUpdate($session, [
+                    'phase'               => 'advisor_started',
+                    'completed_advisors'  => count($advisorOutputs),
+                    'total_advisors'      => $advisors->count(),
+                    'active_advisor'      => [
+                        'id'    => $advisor->id,
+                        'name'  => $advisor->name,
+                        'role'  => $advisor->role,
+                        'model' => $advisor->model,
+                    ],
+                ]);
+
                 Log::info('[Council] Calling advisor', [
                     'session_id' => $session->id,
                     'step'       => ($index + 1).'/'.$advisors->count(),
@@ -47,7 +68,7 @@ class Orchestrator
                         'model'    => $advisor->model,
                         'messages' => [
                             ['role' => 'system', 'content' => $advisor->system_prompt],
-                            ['role' => 'user',   'content' => $question],
+                            ['role' => 'user',   'content' => $session->question],
                         ],
                     ]);
                 } catch (\Throwable $e) {
@@ -99,6 +120,18 @@ class Orchestrator
                     'role'    => $advisor->role,
                     'content' => $content,
                 ];
+
+                $this->broadcastUpdate($session, [
+                    'phase'               => 'advisor_completed',
+                    'completed_advisors'  => count($advisorOutputs),
+                    'total_advisors'      => $advisors->count(),
+                    'active_advisor'      => [
+                        'id'    => $advisor->id,
+                        'name'  => $advisor->name,
+                        'role'  => $advisor->role,
+                        'model' => $advisor->model,
+                    ],
+                ]);
             }
 
             // Chair synthesises all responses
@@ -107,12 +140,24 @@ class Orchestrator
                 'model'      => $chair->model,
             ]);
 
+            $this->broadcastUpdate($session, [
+                'phase'               => 'chair_started',
+                'completed_advisors'  => count($advisorOutputs),
+                'total_advisors'      => $advisors->count(),
+                'active_advisor'      => [
+                    'id'    => $chair->id,
+                    'name'  => $chair->name,
+                    'role'  => $chair->role,
+                    'model' => $chair->model,
+                ],
+            ]);
+
             try {
                 $chairResult = $this->openai->chat()->create([
                     'model'    => $chair->model,
                     'messages' => [
                         ['role' => 'system', 'content' => $chair->system_prompt],
-                        ['role' => 'user',   'content' => $this->buildSynthesisPrompt($question, $advisorOutputs)],
+                        ['role' => 'user',   'content' => $this->buildSynthesisPrompt($session->question, $advisorOutputs)],
                     ],
                 ]);
             } catch (\Throwable $e) {
@@ -144,12 +189,25 @@ class Orchestrator
 
             Log::info('[Council] Deliberation complete', ['session_id' => $session->id]);
 
+            $this->broadcastUpdate($session, [
+                'phase'               => 'completed',
+                'completed_advisors'  => $advisors->count(),
+                'total_advisors'      => $advisors->count(),
+            ]);
+
         } catch (\Throwable $e) {
             Log::error('Orchestrator deliberation failed', [
                 'session_id' => $session->id,
                 ...$this->buildExceptionContext($e),
             ]);
+
             $session->update(['status' => 'failed']);
+
+            $this->broadcastUpdate($session, [
+                'phase'               => 'failed',
+                'error'               => $e->getMessage(),
+            ]);
+
             throw $e;
         }
 
@@ -224,5 +282,13 @@ class Orchestrator
         }
 
         return null;
+    }
+
+    private function broadcastUpdate(BoardSession $session, array $progress): void
+    {
+        event(new CouncilSessionUpdated(
+            $session->id,
+            SessionBroadcastPayload::fromSession($session->fresh(), $progress),
+        ));
     }
 }

@@ -5,8 +5,10 @@
 
     let question = $state('');
     let loading  = $state(false);
+    /** @type {string | null} */
     let error    = $state(null);
 
+    /** @param {SubmitEvent} e */
     async function handleSubmit(e) {
         e.preventDefault();
         if (!question.trim()) return;
@@ -17,8 +19,9 @@
         try {
             const result = await ask(question.trim());
             onresult(result);
+            question = '';
         } catch (err) {
-            error = err.message;
+            error = err instanceof Error ? err.message : 'Request failed';
         } finally {
             loading = false;
         }
@@ -43,6 +46,6 @@
         disabled={loading || !question.trim()}
         class="self-end rounded-lg bg-indigo-600 px-5 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
     >
-        {loading ? 'Deliberating…' : 'Ask'}
+        {loading ? 'Opening Session…' : 'Ask'}
     </button>
 </form>

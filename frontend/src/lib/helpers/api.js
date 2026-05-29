@@ -1,9 +1,18 @@
 import { PUBLIC_API_BASE_URL } from '$env/static/public';
 
 /**
+ * @typedef {{ id: number, name: string, role: string, model: string }} AdvisorSummary
+ * @typedef {{ id: number, name: string, role: string }} ResponseAdvisor
+ * @typedef {{ id: number, content: string, model_used: string, advisor: ResponseAdvisor | null }} AdvisorResponse
+ * @typedef {{ phase?: string, completed_advisors?: number, total_advisors?: number, active_advisor?: AdvisorSummary, error?: string }} SessionProgress
+ * @typedef {{ id: number, question: string, status: string, created_at: string, updated_at?: string, progress?: SessionProgress | null }} CouncilSessionRealtimeUpdate
+ * @typedef {{ id: number, question: string, status: string, consensus: string | null, created_at: string, updated_at?: string, advisors?: AdvisorSummary[], advisor_responses?: AdvisorResponse[], progress?: SessionProgress | null }} CouncilSession
+ */
+
+/**
  * POST /api/ask
  * @param {string} question
- * @returns {Promise<{session_id: number, question: string, answer: string, model: string, usage: object}>}
+ * @returns {Promise<CouncilSession>}
  */
 export async function ask(question) {
     const res = await fetch(`${PUBLIC_API_BASE_URL}/api/ask`, {
@@ -22,8 +31,29 @@ export async function ask(question) {
 }
 
 /**
+ * @param {CouncilSession | null} currentSession
+ * @param {CouncilSessionRealtimeUpdate | CouncilSession} update
+ * @returns {CouncilSession}
+ */
+export function mergeSessionUpdate(currentSession, update) {
+    const hasFullSessionFields = 'consensus' in update;
+
+    return {
+        id: update.id,
+        question: update.question,
+        status: update.status,
+        consensus: hasFullSessionFields ? update.consensus : (currentSession?.consensus ?? null),
+        created_at: update.created_at,
+        updated_at: update.updated_at ?? currentSession?.updated_at,
+        advisors: hasFullSessionFields ? (update.advisors ?? []) : (currentSession?.advisors ?? []),
+        advisor_responses: hasFullSessionFields ? (update.advisor_responses ?? []) : (currentSession?.advisor_responses ?? []),
+        progress: update.progress ?? currentSession?.progress ?? null,
+    };
+}
+
+/**
  * GET /api/sessions — recent sessions list
- * @returns {Promise<Array>}
+ * @returns {Promise<CouncilSession[]>}
  */
 export async function getSessions() {
     const res = await fetch(`${PUBLIC_API_BASE_URL}/api/sessions`);
@@ -34,7 +64,7 @@ export async function getSessions() {
 /**
  * GET /api/sessions/{id}
  * @param {number} id
- * @returns {Promise<object>}
+ * @returns {Promise<CouncilSession>}
  */
 export async function getSession(id) {
     const res = await fetch(`${PUBLIC_API_BASE_URL}/api/sessions/${id}`);

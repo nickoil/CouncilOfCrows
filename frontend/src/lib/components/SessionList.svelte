@@ -3,6 +3,7 @@
 
     let { sessions, onselect } = $props();
 
+    /** @param {number} id */
     async function handleSelect(id) {
         const session = await getSession(id);
         onselect(session);
