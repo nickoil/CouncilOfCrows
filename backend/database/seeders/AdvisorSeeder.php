@@ -61,7 +61,10 @@ class AdvisorSeeder extends Seeder
         ];
 
         foreach ($advisors as $data) {
-            Advisor::create($data);
+            Advisor::updateOrCreate(
+                ['role' => $data['role']],
+                $data,
+            );
         }
     }
 }

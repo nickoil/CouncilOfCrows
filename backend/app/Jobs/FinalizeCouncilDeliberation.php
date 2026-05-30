@@ -19,6 +19,10 @@ class FinalizeCouncilDeliberation implements ShouldQueue
 
     public int $tries = 1;
 
+    public int $timeout = 300;
+
+    public bool $failOnTimeout = true;
+
     public function __construct(public readonly int $sessionId) {}
 
     public function handle(Orchestrator $orchestrator): void

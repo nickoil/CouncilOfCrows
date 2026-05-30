@@ -9,6 +9,8 @@ class SessionPresenter
 {
     public static function present(BoardSession $session, ?array $progress = null): array
     {
+        AdvisorCatalog::ensureDefaults();
+
         $session->load('advisorResponses.advisor');
 
         $activeAdvisorIds = $session->active_advisor_ids ?? [];
@@ -20,9 +22,11 @@ class SessionPresenter
             'id'                => $session->id,
             'question'          => $session->question,
             'status'            => $session->status,
+            'deliberation_mode' => $session->deliberation_mode,
             'consensus'         => $session->consensus,
             'failure_reason'    => $session->failure_reason,
             'advisor_failures'  => $session->advisor_failures ?? [],
+            'selected_tensions' => $session->selected_tensions ?? [],
             'partial'           => ! empty($session->advisor_failures),
             'created_at'        => $session->created_at,
             'updated_at'        => $session->updated_at,
@@ -52,6 +56,10 @@ class SessionPresenter
                 ->all(),
             'advisor_responses' => $session->advisorResponses->map(fn ($response) => [
                 'id'         => $response->id,
+                'response_type' => $response->response_type,
+                'round_number' => $response->round_number,
+                'tension_key' => $response->tension_key,
+                'tension_label' => $response->tension_label,
                 'content'    => $response->content,
                 'model_used' => $response->model_used,
                 'advisor'    => $response->advisor ? [

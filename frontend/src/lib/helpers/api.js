@@ -2,24 +2,26 @@ import { PUBLIC_API_BASE_URL } from '$env/static/public';
 
 /**
  * @typedef {{ id: number, name: string, role: string, model: string }} AdvisorSummary
- * @typedef {{ advisor_id: number, name: string, role: string, model: string, message: string }} AdvisorFailure
+ * @typedef {{ key: string, label: string, question: string, advisors_involved?: string[], why_it_matters?: string }} SelectedTension
+ * @typedef {{ advisor_id: number, name: string, role: string, model: string, response_type?: string, round_number?: number, tension_key?: string | null, tension_label?: string | null, message: string }} AdvisorFailure
  * @typedef {{ id: number, name: string, role: string }} ResponseAdvisor
- * @typedef {{ id: number, content: string, model_used: string, advisor: ResponseAdvisor | null }} AdvisorResponse
- * @typedef {{ phase?: string, completed_advisors?: number, failed_advisors?: number, total_advisors?: number, active_advisor?: AdvisorSummary, active_advisors?: AdvisorSummary[], failed_advisor?: AdvisorFailure, error?: string }} SessionProgress
+ * @typedef {{ id: number, response_type?: string, round_number?: number, tension_key?: string | null, tension_label?: string | null, content: string, model_used: string, advisor: ResponseAdvisor | null }} AdvisorResponse
+ * @typedef {{ phase?: string, current_round?: number, tension_count?: number, completed_advisors?: number, failed_advisors?: number, total_advisors?: number, active_advisor?: AdvisorSummary, active_advisors?: AdvisorSummary[], failed_advisor?: AdvisorFailure, error?: string }} SessionProgress
  * @typedef {{ id: number, question: string, status: string, created_at: string, updated_at?: string, progress?: SessionProgress | null }} CouncilSessionRealtimeUpdate
- * @typedef {{ id: number, question: string, status: string, consensus: string | null, failure_reason?: string | null, advisor_failures?: AdvisorFailure[], partial?: boolean, active_advisors?: AdvisorSummary[], created_at: string, updated_at?: string, advisors?: AdvisorSummary[], advisor_responses?: AdvisorResponse[], progress?: SessionProgress | null }} CouncilSession
+ * @typedef {{ id: number, question: string, status: string, deliberation_mode?: string, consensus: string | null, failure_reason?: string | null, advisor_failures?: AdvisorFailure[], selected_tensions?: SelectedTension[], partial?: boolean, active_advisors?: AdvisorSummary[], created_at: string, updated_at?: string, advisors?: AdvisorSummary[], advisor_responses?: AdvisorResponse[], progress?: SessionProgress | null }} CouncilSession
  */
 
 /**
  * POST /api/ask
  * @param {string} question
+ * @param {string} deliberationMode
  * @returns {Promise<CouncilSession>}
  */
-export async function ask(question) {
+export async function ask(question, deliberationMode = 'single_round') {
     const res = await fetch(`${PUBLIC_API_BASE_URL}/api/ask`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question }),
+        body: JSON.stringify({ question, deliberation_mode: deliberationMode }),
     });
 
     const data = await res.json();
@@ -43,9 +45,11 @@ export function mergeSessionUpdate(currentSession, update) {
         id: update.id,
         question: update.question,
         status: update.status,
+        deliberation_mode: hasFullSessionFields ? update.deliberation_mode : (currentSession?.deliberation_mode ?? 'single_round'),
         consensus: hasFullSessionFields ? update.consensus : (currentSession?.consensus ?? null),
         failure_reason: hasFullSessionFields ? (update.failure_reason ?? null) : (currentSession?.failure_reason ?? null),
         advisor_failures: hasFullSessionFields ? (update.advisor_failures ?? []) : (currentSession?.advisor_failures ?? []),
+        selected_tensions: hasFullSessionFields ? (update.selected_tensions ?? []) : (currentSession?.selected_tensions ?? []),
         partial: hasFullSessionFields ? Boolean(update.partial) : Boolean(currentSession?.partial),
         created_at: update.created_at,
         updated_at: update.updated_at ?? currentSession?.updated_at,

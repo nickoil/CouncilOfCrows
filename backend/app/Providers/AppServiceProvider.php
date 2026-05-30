@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Support\AdvisorCatalog;
 use Illuminate\Support\ServiceProvider;
 use OpenAI\Client as OpenAIClient;
 
@@ -21,6 +22,6 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        //
+        AdvisorCatalog::ensureDefaults();
     }
 }

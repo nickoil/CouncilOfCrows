@@ -15,12 +15,14 @@ class AskController extends Controller
     {
         $validated = $request->validate([
             'question' => 'required|string|max:2000',
+            'deliberation_mode' => 'nullable|in:single_round,two_round',
         ]);
 
         try {
             $session = BoardSession::create([
                 'question' => $validated['question'],
                 'status'   => 'queued',
+                'deliberation_mode' => $validated['deliberation_mode'] ?? 'single_round',
             ]);
 
             RunCouncilDeliberation::dispatch($session->id)->onQueue('debate');

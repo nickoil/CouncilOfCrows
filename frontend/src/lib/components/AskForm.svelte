@@ -4,6 +4,7 @@
     let { onresult } = $props();
 
     let question = $state('');
+    let deliberationMode = $state('single_round');
     let loading  = $state(false);
     /** @type {string | null} */
     let error    = $state(null);
@@ -15,7 +16,7 @@
         error   = null;
 
         try {
-            const result = await ask(question.trim());
+            const result = await ask(question.trim(), deliberationMode);
             onresult(result);
             question = '';
         } catch (err) {
@@ -44,6 +45,20 @@
 </script>
 
 <form onsubmit={handleSubmit} class="flex flex-col gap-4">
+    <fieldset class="flex flex-wrap gap-2">
+        <legend class="mb-2 w-full text-xs font-semibold uppercase tracking-wide text-gray-500">Deliberation Mode</legend>
+
+        <label class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700">
+            <input type="radio" bind:group={deliberationMode} value="single_round" disabled={loading} />
+            <span>One Round</span>
+        </label>
+
+        <label class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700">
+            <input type="radio" bind:group={deliberationMode} value="two_round" disabled={loading} />
+            <span>Two Rounds</span>
+        </label>
+    </fieldset>
+
     <textarea
         bind:value={question}
         rows="4"

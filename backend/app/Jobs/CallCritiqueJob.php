@@ -12,7 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class CallAdvisorJob implements ShouldQueue
+class CallCritiqueJob implements ShouldQueue
 {
     use Batchable;
     use Dispatchable;
@@ -29,6 +29,7 @@ class CallAdvisorJob implements ShouldQueue
     public function __construct(
         public readonly int $sessionId,
         public readonly int $advisorId,
+        public readonly array $tension,
     ) {}
 
     public function handle(Orchestrator $orchestrator): void
@@ -40,7 +41,7 @@ class CallAdvisorJob implements ShouldQueue
         $session = BoardSession::findOrFail($this->sessionId);
         $advisor = Advisor::findOrFail($this->advisorId);
 
-        $orchestrator->handleIndependentAdvisor($session, $advisor);
+        $orchestrator->handleCritiqueAdvisor($session, $advisor, $this->tension);
 
         AdvanceCouncilStage::dispatch($session->id)->onQueue('debate');
     }
