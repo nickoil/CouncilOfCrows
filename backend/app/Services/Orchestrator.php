@@ -50,19 +50,63 @@ class Orchestrator
 
     public function handleIndependentAdvisor(BoardSession $session, Advisor $advisor): void
     {
+        $messages = [
+            ['role' => 'system', 'content' => $advisor->system_prompt],
+        ];
+
+        $priorContext = $this->buildPriorContextBlock($session);
+
+        if ($priorContext !== null) {
+            $messages[] = ['role' => 'system', 'content' => $priorContext];
+        }
+
+        $messages[] = ['role' => 'user', 'content' => $session->question];
+
         $this->handleAdvisorResponse(
             $session,
             $advisor,
             'independent',
             1,
             null,
-            [
-                ['role' => 'system', 'content' => $advisor->system_prompt],
-                ['role' => 'user', 'content' => $session->question],
-            ],
+            $messages,
             'advisor_started',
             'advisor_completed'
         );
+    }
+
+    private function buildPriorContextBlock(BoardSession $session): ?string
+    {
+        if (empty($session->subject)) {
+            return null;
+        }
+
+        $priorSessions = BoardSession::query()
+            ->where('id', '!=', $session->id)
+            ->whereNotNull('subject')
+            ->whereRaw('LOWER(subject) = LOWER(?)', [$session->subject])
+            ->where('status', 'complete')
+            ->whereNotNull('consensus')
+            ->orderByDesc('created_at')
+            ->limit(3)
+            ->get(['question', 'consensus', 'created_at']);
+
+        if ($priorSessions->isEmpty()) {
+            return null;
+        }
+
+        $parts = ['Prior council deliberations on this subject:'];
+
+        foreach ($priorSessions as $prior) {
+            $consensus = $prior->consensus;
+            $truncated = mb_strlen($consensus) > 400
+                ? mb_substr($consensus, 0, 400) . '…'
+                : $consensus;
+
+            $date = $prior->created_at->format('Y-m-d');
+            $parts[] = "— {$date}: \"{$prior->question}\"\nSynthesis: {$truncated}";
+        }
+
+        return implode("\n\n", $parts);
     }
 
     public function selectCritiqueTensions(BoardSession $session): array

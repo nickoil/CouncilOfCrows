@@ -21,6 +21,7 @@ class SessionPresenter
         return [
             'id'                => $session->id,
             'question'          => $session->question,
+            'subject'           => $session->subject,
             'status'            => $session->status,
             'deliberation_mode' => $session->deliberation_mode,
             'consensus'         => $session->consensus,

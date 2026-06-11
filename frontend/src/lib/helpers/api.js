@@ -7,21 +7,22 @@ import { PUBLIC_API_BASE_URL } from '$env/static/public';
  * @typedef {{ id: number, name: string, role: string }} ResponseAdvisor
  * @typedef {{ id: number, response_type?: string, round_number?: number, tension_key?: string | null, tension_label?: string | null, content: string, model_used: string, advisor: ResponseAdvisor | null }} AdvisorResponse
  * @typedef {{ phase?: string, current_round?: number, tension_count?: number, completed_advisors?: number, failed_advisors?: number, total_advisors?: number, active_advisor?: AdvisorSummary, active_advisors?: AdvisorSummary[], failed_advisor?: AdvisorFailure, error?: string }} SessionProgress
- * @typedef {{ id: number, question: string, status: string, created_at: string, updated_at?: string, progress?: SessionProgress | null }} CouncilSessionRealtimeUpdate
- * @typedef {{ id: number, question: string, status: string, deliberation_mode?: string, consensus: string | null, failure_reason?: string | null, advisor_failures?: AdvisorFailure[], selected_tensions?: SelectedTension[], partial?: boolean, active_advisors?: AdvisorSummary[], created_at: string, updated_at?: string, advisors?: AdvisorSummary[], advisor_responses?: AdvisorResponse[], progress?: SessionProgress | null }} CouncilSession
+ * @typedef {{ id: number, question: string, subject?: string | null, status: string, created_at: string, updated_at?: string, progress?: SessionProgress | null }} CouncilSessionRealtimeUpdate
+ * @typedef {{ id: number, question: string, subject?: string | null, status: string, deliberation_mode?: string, consensus: string | null, failure_reason?: string | null, advisor_failures?: AdvisorFailure[], selected_tensions?: SelectedTension[], partial?: boolean, active_advisors?: AdvisorSummary[], created_at: string, updated_at?: string, advisors?: AdvisorSummary[], advisor_responses?: AdvisorResponse[], progress?: SessionProgress | null }} CouncilSession
  */
 
 /**
  * POST /api/ask
  * @param {string} question
  * @param {string} deliberationMode
+ * @param {string | null} subject
  * @returns {Promise<CouncilSession>}
  */
-export async function ask(question, deliberationMode = 'single_round') {
+export async function ask(question, deliberationMode = 'single_round', subject = null) {
     const res = await fetch(`${PUBLIC_API_BASE_URL}/api/ask`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question, deliberation_mode: deliberationMode }),
+        body: JSON.stringify({ question, deliberation_mode: deliberationMode, subject: subject || null }),
     });
 
     const data = await res.json();
@@ -44,6 +45,7 @@ export function mergeSessionUpdate(currentSession, update) {
     return {
         id: update.id,
         question: update.question,
+        subject: hasFullSessionFields ? (update.subject ?? null) : (currentSession?.subject ?? null),
         status: update.status,
         deliberation_mode: hasFullSessionFields ? update.deliberation_mode : (currentSession?.deliberation_mode ?? 'single_round'),
         consensus: hasFullSessionFields ? update.consensus : (currentSession?.consensus ?? null),
@@ -78,5 +80,15 @@ export async function getSessions() {
 export async function getSession(id) {
     const res = await fetch(`${PUBLIC_API_BASE_URL}/api/sessions/${id}`);
     if (!res.ok) throw new Error('Failed to load session');
+    return res.json();
+}
+
+/**
+ * GET /api/subjects — distinct subject strings
+ * @returns {Promise<string[]>}
+ */
+export async function getSubjects() {
+    const res = await fetch(`${PUBLIC_API_BASE_URL}/api/subjects`);
+    if (!res.ok) return [];
     return res.json();
 }

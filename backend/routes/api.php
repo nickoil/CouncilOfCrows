@@ -6,3 +6,4 @@ use Illuminate\Support\Facades\Route;
 Route::post('/ask', [AskController::class, 'store']);
 Route::get('/sessions', [SessionsController::class, 'index']);
 Route::get('/sessions/{session}', [SessionsController::class, 'show']);
+Route::get('/subjects', [SessionsController::class, 'subjects']);

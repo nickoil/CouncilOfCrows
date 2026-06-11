@@ -1,13 +1,21 @@
 <script>
-    import { ask } from '$lib/helpers/api.js';
+    import { onMount } from 'svelte';
+    import { ask, getSubjects } from '$lib/helpers/api.js';
 
     let { onresult } = $props();
 
     let question = $state('');
+    let subject = $state('');
     let deliberationMode = $state('single_round');
     let loading  = $state(false);
     /** @type {string | null} */
     let error    = $state(null);
+    /** @type {string[]} */
+    let knownSubjects = $state([]);
+
+    onMount(async () => {
+        knownSubjects = await getSubjects();
+    });
 
     async function submitQuestion() {
         if (!question.trim()) return;
@@ -16,9 +24,11 @@
         error   = null;
 
         try {
-            const result = await ask(question.trim(), deliberationMode);
+            const result = await ask(question.trim(), deliberationMode, subject.trim() || null);
             onresult(result);
             question = '';
+            subject  = '';
+            knownSubjects = await getSubjects();
         } catch (err) {
             error = err instanceof Error ? err.message : 'Request failed';
         } finally {
@@ -45,6 +55,25 @@
 </script>
 
 <form onsubmit={handleSubmit} class="flex flex-col gap-4">
+    <div>
+        <label for="subject" class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Subject <span class="font-normal normal-case text-gray-400">(optional)</span></label>
+        <input
+            id="subject"
+            type="text"
+            list="subject-list"
+            bind:value={subject}
+            placeholder="e.g. Product strategy, Technical architecture…"
+            disabled={loading}
+            maxlength="255"
+            class="w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+        />
+        <datalist id="subject-list">
+            {#each knownSubjects as s}
+                <option value={s}></option>
+            {/each}
+        </datalist>
+    </div>
+
     <fieldset class="flex flex-wrap gap-2">
         <legend class="mb-2 w-full text-xs font-semibold uppercase tracking-wide text-gray-500">Deliberation Mode</legend>
 

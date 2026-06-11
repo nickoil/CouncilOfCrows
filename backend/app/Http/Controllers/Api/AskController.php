@@ -14,14 +14,16 @@ class AskController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'question' => 'required|string|max:2000',
+            'question'          => 'required|string|max:2000',
+            'subject'           => 'nullable|string|max:255',
             'deliberation_mode' => 'nullable|in:single_round,two_round',
         ]);
 
         try {
             $session = BoardSession::create([
-                'question' => $validated['question'],
-                'status'   => 'queued',
+                'question'          => $validated['question'],
+                'subject'           => $validated['subject'] ?? null,
+                'status'            => 'queued',
                 'deliberation_mode' => $validated['deliberation_mode'] ?? 'single_round',
             ]);
 
