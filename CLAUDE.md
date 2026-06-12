@@ -14,7 +14,7 @@ Do not read or search in the following directories unless I explicitly ask:
 - .cache/
 
 ## Current Phase
-Phase 5: Subjects and Institutional Memory — Phases 1–4 complete
+Phase 6: Cost Tracking and Deliberative Constraints — Phases 1–5 complete
 
 ## Architecture Decisions
 - Councils over swarms: advisors are persistent with identity and memory, not ephemeral agents
