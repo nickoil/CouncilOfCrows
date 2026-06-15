@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte';
-    import { ask, getSubjects } from '$lib/helpers/api.js';
+    import { ask, getSubjects, getCostEstimate } from '$lib/helpers/api.js';
 
     let { onresult } = $props();
 
@@ -12,10 +12,32 @@
     let error    = $state(null);
     /** @type {string[]} */
     let knownSubjects = $state([]);
+    /** @type {import('$lib/helpers/api.js').CostEstimate | null} */
+    let estimate = $state(null);
+    let estimateLoading = $state(false);
 
     onMount(async () => {
         knownSubjects = await getSubjects();
+        void loadEstimate(deliberationMode);
     });
+
+    /** @param {string} mode */
+    async function loadEstimate(mode) {
+        estimateLoading = true;
+        try {
+            estimate = await getCostEstimate(mode);
+        } catch {
+            estimate = null;
+        } finally {
+            estimateLoading = false;
+        }
+    }
+
+    /** @param {string} mode */
+    function handleModeChange(mode) {
+        deliberationMode = mode;
+        void loadEstimate(mode);
+    }
 
     async function submitQuestion() {
         if (!question.trim()) return;
@@ -52,6 +74,14 @@
             }
         }
     }
+
+    const estimateLabel = $derived.by(() => {
+        if (estimateLoading) return 'Estimating…';
+        if (!estimate || estimate.sample_size === 0) return null;
+        const min = `£${estimate.min_cost_gbp?.toFixed(3)}`;
+        const max = `£${estimate.max_cost_gbp?.toFixed(3)}`;
+        return `Estimated cost: ${min} – ${max}`;
+    });
 </script>
 
 <form onsubmit={handleSubmit} class="flex flex-col gap-4">
@@ -74,18 +104,22 @@
         </datalist>
     </div>
 
-    <fieldset class="flex flex-wrap gap-2">
+    <fieldset class="flex flex-wrap items-center gap-2">
         <legend class="mb-2 w-full text-xs font-semibold uppercase tracking-wide text-gray-500">Deliberation Mode</legend>
 
         <label class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700">
-            <input type="radio" bind:group={deliberationMode} value="single_round" disabled={loading} />
+            <input type="radio" name="deliberation_mode" value="single_round" checked={deliberationMode === 'single_round'} disabled={loading} onchange={() => handleModeChange('single_round')} />
             <span>One Round</span>
         </label>
 
         <label class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700">
-            <input type="radio" bind:group={deliberationMode} value="two_round" disabled={loading} />
+            <input type="radio" name="deliberation_mode" value="two_round" checked={deliberationMode === 'two_round'} disabled={loading} onchange={() => handleModeChange('two_round')} />
             <span>Two Rounds</span>
         </label>
+
+        {#if estimateLabel}
+            <span class="text-xs text-gray-400 ml-1">{estimateLabel}</span>
+        {/if}
     </fieldset>
 
     <textarea

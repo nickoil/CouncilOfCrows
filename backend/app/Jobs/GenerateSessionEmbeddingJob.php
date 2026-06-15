@@ -3,34 +3,29 @@
 namespace App\Jobs;
 
 use App\Models\BoardSession;
-use App\Services\Orchestrator;
+use App\Services\SemanticMemoryService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class FinalizeCouncilDeliberation implements ShouldQueue
+class GenerateSessionEmbeddingJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
 
-    public int $tries = 1;
+    public int $tries = 2;
 
-    public int $timeout = 300;
-
-    public bool $failOnTimeout = true;
+    public int $timeout = 60;
 
     public function __construct(public readonly int $sessionId) {}
 
-    public function handle(Orchestrator $orchestrator): void
+    public function handle(SemanticMemoryService $memory): void
     {
         $session = BoardSession::findOrFail($this->sessionId);
-
-        $orchestrator->finalize($session);
-
-        GenerateSessionEmbeddingJob::dispatch($this->sessionId)->onQueue('debate');
+        $memory->storeSessionEmbedding($session);
     }
 }

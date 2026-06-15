@@ -5,10 +5,14 @@ import { PUBLIC_API_BASE_URL } from '$env/static/public';
  * @typedef {{ key: string, label: string, question: string, advisors_involved?: string[], why_it_matters?: string }} SelectedTension
  * @typedef {{ advisor_id: number, name: string, role: string, model: string, response_type?: string, round_number?: number, tension_key?: string | null, tension_label?: string | null, message: string }} AdvisorFailure
  * @typedef {{ id: number, name: string, role: string }} ResponseAdvisor
- * @typedef {{ id: number, response_type?: string, round_number?: number, tension_key?: string | null, tension_label?: string | null, content: string, model_used: string, advisor: ResponseAdvisor | null }} AdvisorResponse
+ * @typedef {{ id: number, response_type?: string, round_number?: number, tension_key?: string | null, tension_label?: string | null, content: string, model_used: string, prompt_tokens?: number, completion_tokens?: number, cost_gbp?: number, advisor: ResponseAdvisor | null }} AdvisorResponse
  * @typedef {{ phase?: string, current_round?: number, tension_count?: number, completed_advisors?: number, failed_advisors?: number, total_advisors?: number, active_advisor?: AdvisorSummary, active_advisors?: AdvisorSummary[], failed_advisor?: AdvisorFailure, error?: string }} SessionProgress
- * @typedef {{ id: number, question: string, subject?: string | null, status: string, created_at: string, updated_at?: string, progress?: SessionProgress | null }} CouncilSessionRealtimeUpdate
- * @typedef {{ id: number, question: string, subject?: string | null, status: string, deliberation_mode?: string, consensus: string | null, failure_reason?: string | null, advisor_failures?: AdvisorFailure[], selected_tensions?: SelectedTension[], partial?: boolean, active_advisors?: AdvisorSummary[], created_at: string, updated_at?: string, advisors?: AdvisorSummary[], advisor_responses?: AdvisorResponse[], progress?: SessionProgress | null }} CouncilSession
+ * @typedef {{ prompt_tokens: number, completion_tokens: number, total_tokens: number, total_cost_gbp: number, budget_hit: boolean, degradation: string | null }} SessionCost
+ * @typedef {{ id: number, question: string, date: string }} RetrievedMemory
+ * @typedef {{ id: number, question: string, subject?: string | null, status: string, created_at: string, updated_at?: string, progress?: SessionProgress | null, cost?: SessionCost }} CouncilSessionRealtimeUpdate
+ * @typedef {{ id: number, question: string, subject?: string | null, status: string, deliberation_mode?: string, consensus: string | null, failure_reason?: string | null, advisor_failures?: AdvisorFailure[], selected_tensions?: SelectedTension[], partial?: boolean, active_advisors?: AdvisorSummary[], created_at: string, updated_at?: string, advisors?: AdvisorSummary[], advisor_responses?: AdvisorResponse[], progress?: SessionProgress | null, cost?: SessionCost, retrieved_memories?: RetrievedMemory[] }} CouncilSession
+ * @typedef {{ month: string, spend_gbp: number, budget_gbp: number, utilisation_pct: number, exceeded: boolean, near_limit: boolean }} MonthlyCost
+ * @typedef {{ mode: string, avg_cost_gbp: number | null, min_cost_gbp: number | null, max_cost_gbp: number | null, sample_size: number }} CostEstimate
  */
 
 /**
@@ -59,6 +63,8 @@ export function mergeSessionUpdate(currentSession, update) {
         advisors: hasFullSessionFields ? (update.advisors ?? []) : (currentSession?.advisors ?? []),
         advisor_responses: hasFullSessionFields ? (update.advisor_responses ?? []) : (currentSession?.advisor_responses ?? []),
         progress: update.progress ?? currentSession?.progress ?? null,
+        cost: update.cost ?? currentSession?.cost ?? undefined,
+        retrieved_memories: hasFullSessionFields ? (update.retrieved_memories ?? []) : (currentSession?.retrieved_memories ?? []),
     };
 }
 
@@ -90,5 +96,26 @@ export async function getSession(id) {
 export async function getSubjects() {
     const res = await fetch(`${PUBLIC_API_BASE_URL}/api/subjects`);
     if (!res.ok) return [];
+    return res.json();
+}
+
+/**
+ * GET /api/costs/monthly — monthly spend and budget status
+ * @returns {Promise<MonthlyCost>}
+ */
+export async function getMonthlyCosts() {
+    const res = await fetch(`${PUBLIC_API_BASE_URL}/api/costs/monthly`);
+    if (!res.ok) throw new Error('Failed to load monthly costs');
+    return res.json();
+}
+
+/**
+ * GET /api/costs/estimate?mode=... — historical cost estimate for a deliberation mode
+ * @param {string} mode
+ * @returns {Promise<CostEstimate>}
+ */
+export async function getCostEstimate(mode) {
+    const res = await fetch(`${PUBLIC_API_BASE_URL}/api/costs/estimate?mode=${encodeURIComponent(mode)}`);
+    if (!res.ok) throw new Error('Failed to load cost estimate');
     return res.json();
 }

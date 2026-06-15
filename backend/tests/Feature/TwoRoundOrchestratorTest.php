@@ -144,8 +144,12 @@ class TwoRoundOrchestratorTest extends TestCase
                             'message' => ['content' => $this->content],
                         ],
                     ],
+                    'id'    => 'gen-test-' . uniqid(),
                     'usage' => [
-                        'total_cost_gbp' => 0,
+                        'prompt_tokens'    => 12,
+                        'completion_tokens' => 34,
+                        'total_tokens'     => 46,
+                        'cost'             => 0.001,
                     ],
                 ];
             }

@@ -6,10 +6,12 @@ use App\Events\CouncilSessionUpdated;
 use App\Models\Advisor;
 use App\Models\AdvisorResponse;
 use App\Models\BoardSession;
+use App\Support\CostGuard;
 use App\Support\SessionBroadcastPayload;
-use App\Support\SessionPresenter;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\MaxAttemptsExceededException;
 use Illuminate\Queue\TimeoutExceededException;
@@ -76,9 +78,15 @@ class Orchestrator
 
     private function buildPriorContextBlock(BoardSession $session): ?string
     {
+        if (!empty($session->memory_context)) {
+            return $session->memory_context;
+        }
+
         if (empty($session->subject)) {
             return null;
         }
+
+        $retrievalLimit = (int) config('council.constraints.max_retrieval_sessions', 3);
 
         $priorSessions = BoardSession::query()
             ->where('id', '!=', $session->id)
@@ -87,7 +95,7 @@ class Orchestrator
             ->where('status', 'complete')
             ->whereNotNull('consensus')
             ->orderByDesc('created_at')
-            ->limit(3)
+            ->limit($retrievalLimit)
             ->get(['question', 'consensus', 'created_at']);
 
         if ($priorSessions->isEmpty()) {
@@ -314,18 +322,32 @@ class Orchestrator
                 'model_used' => $chair->model,
                 'prompt_tokens' => $chairUsage->promptTokens ?? 0,
                 'completion_tokens' => $chairUsage->completionTokens ?? 0,
-                'cost_gbp' => $chairData['usage']['total_cost_gbp'] ?? 0,
+                'cost_gbp' => $this->extractCostGbp($chairData),
             ]
         );
 
-        $session->update([
-            'status' => 'complete',
-            'consensus' => $consensus,
-            'failure_reason' => null,
-            'active_advisor_ids' => [],
+        $guard       = new CostGuard();
+        $totalCost   = $guard->sessionCostGbp($session->id);
+        $totalTokens = $guard->sessionTotalTokens($session->id);
+
+        $costSummary = array_merge($session->cost_summary ?? [], [
+            'total_cost_gbp'  => round($totalCost, 6),
+            'total_tokens'    => $totalTokens,
         ]);
 
-        Log::info('[Council] Deliberation complete', ['session_id' => $session->id]);
+        $session->update([
+            'status'             => 'complete',
+            'consensus'          => $consensus,
+            'failure_reason'     => null,
+            'active_advisor_ids' => [],
+            'cost_summary'       => $costSummary,
+        ]);
+
+        Log::info('[Council] Deliberation complete', [
+            'session_id'  => $session->id,
+            'total_cost'  => $totalCost,
+            'total_tokens' => $totalTokens,
+        ]);
 
         $completedSession = $session->fresh();
 
@@ -372,6 +394,10 @@ class Orchestrator
 
                 $parts[] = "**{$failure['name']}** ({$failure['role']}) failed {$context}: {$failure['message']}";
             }
+        }
+
+        if (! empty($session->cost_summary['budget_hit'])) {
+            $parts[] = 'Note: The critique round was skipped due to session budget constraints. This synthesis is based on independent responses only.';
         }
 
         $parts[] = 'Synthesise the council\'s perspectives into a coherent overall assessment. If critiques are present, integrate them into the final reasoning rather than merely repeating Round 1.';
@@ -436,7 +462,7 @@ class Orchestrator
                     'model_used' => $advisor->model,
                     'prompt_tokens' => $usage->promptTokens ?? 0,
                     'completion_tokens' => $usage->completionTokens ?? 0,
-                    'cost_gbp' => $data['usage']['total_cost_gbp'] ?? 0,
+                    'cost_gbp' => $this->extractCostGbp($data),
                 ]
             );
 
@@ -838,6 +864,65 @@ class Orchestrator
         }
 
         return null;
+    }
+
+    private function extractCostGbp(array $responseData): float
+    {
+        $usage = $responseData['usage'] ?? [];
+        $model = $responseData['model'] ?? '';
+
+        // OpenRouter does not return cost in the chat completion body.
+        // Calculate from token counts using cached per-token pricing.
+        $promptTokens     = (int) ($usage['prompt_tokens'] ?? 0);
+        $completionTokens = (int) ($usage['completion_tokens'] ?? 0);
+
+        if ($promptTokens === 0 && $completionTokens === 0) {
+            return 0.0;
+        }
+
+        $pricing = $this->getModelPricing($model);
+        $usd     = ($promptTokens * $pricing['prompt']) + ($completionTokens * $pricing['completion']);
+
+        return round($usd * (float) config('council.usd_to_gbp_rate', 0.79), 8);
+    }
+
+    private function getModelPricing(string $modelId): array
+    {
+        $cacheKey = "openrouter:model_pricing:{$modelId}";
+
+        return Cache::remember($cacheKey, now()->addDay(), function () use ($modelId) {
+            try {
+                $base   = rtrim((string) config('openrouter.base_uri', 'https://openrouter.ai/api/v1'), '/');
+                $apiKey = (string) config('openrouter.api_key', '');
+
+                $response = Http::withToken($apiKey)->get("{$base}/models");
+
+                if ($response->successful()) {
+                    $model = collect($response->json('data') ?? [])
+                        ->firstWhere('id', $modelId);
+
+                    if ($model) {
+                        $pricing = [
+                            'prompt'     => (float) ($model['pricing']['prompt'] ?? 0),
+                            'completion' => (float) ($model['pricing']['completion'] ?? 0),
+                        ];
+
+                        Log::info('[Council] Model pricing cached', array_merge(['model' => $modelId], $pricing));
+
+                        return $pricing;
+                    }
+                }
+            } catch (\Throwable $e) {
+                Log::warning('[Council] Model pricing fetch failed', [
+                    'model' => $modelId,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            Log::warning('[Council] Model pricing unavailable; cost will be 0', ['model' => $modelId]);
+
+            return ['prompt' => 0.0, 'completion' => 0.0];
+        });
     }
 
     private function broadcastUpdate(BoardSession $session, array $progress): void

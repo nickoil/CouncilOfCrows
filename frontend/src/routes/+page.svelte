@@ -2,6 +2,7 @@
     import { onMount }      from 'svelte';
     import AskForm          from '$lib/components/AskForm.svelte';
     import CouncilView      from '$lib/components/CouncilView.svelte';
+    import MonthlyBudget    from '$lib/components/MonthlyBudget.svelte';
     import SessionList      from '$lib/components/SessionList.svelte';
     import { getSession, getSessions, mergeSessionUpdate }  from '$lib/helpers/api.js';
     import { subscribeToSession } from '$lib/helpers/realtime.js';
@@ -53,7 +54,10 @@
 </script>
 
 <main class="mx-auto max-w-4xl px-4 py-12">
-    <h1 class="mb-8 text-2xl font-semibold text-gray-900">Council of Crows</h1>
+    <div class="mb-8 flex items-start justify-between gap-4">
+        <h1 class="text-2xl font-semibold text-gray-900">Council of Crows</h1>
+        <MonthlyBudget />
+    </div>
 
     <AskForm onresult={handleResult} />
 

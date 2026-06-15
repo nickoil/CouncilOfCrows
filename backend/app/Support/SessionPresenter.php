@@ -13,6 +13,18 @@ class SessionPresenter
 
         $session->load('advisorResponses.advisor');
 
+        $retrievedIds     = $session->retrieved_session_ids ?? [];
+        $retrievedMemories = $retrievedIds
+            ? BoardSession::whereIn('id', $retrievedIds)
+                ->get(['id', 'question', 'created_at'])
+                ->map(fn ($s) => [
+                    'id'       => $s->id,
+                    'question' => $s->question,
+                    'date'     => $s->created_at->format('Y-m-d'),
+                ])
+                ->toArray()
+            : [];
+
         $activeAdvisorIds = $session->active_advisor_ids ?? [];
         $activeAdvisors = Advisor::whereIn('id', $activeAdvisorIds)
             ->get()
@@ -55,15 +67,27 @@ class SessionPresenter
                 ])
                 ->values()
                 ->all(),
+            'cost'              => [
+                'prompt_tokens'    => (int) $session->advisorResponses->sum('prompt_tokens'),
+                'completion_tokens' => (int) $session->advisorResponses->sum('completion_tokens'),
+                'total_tokens'     => (int) ($session->advisorResponses->sum('prompt_tokens') + $session->advisorResponses->sum('completion_tokens')),
+                'total_cost_gbp'   => round((float) $session->advisorResponses->sum('cost_gbp'), 6),
+                'budget_hit'       => (bool) ($session->cost_summary['budget_hit'] ?? false),
+                'degradation'      => $session->cost_summary['degradation'] ?? null,
+            ],
+            'retrieved_memories' => $retrievedMemories,
             'advisor_responses' => $session->advisorResponses->map(fn ($response) => [
-                'id'         => $response->id,
-                'response_type' => $response->response_type,
-                'round_number' => $response->round_number,
-                'tension_key' => $response->tension_key,
-                'tension_label' => $response->tension_label,
-                'content'    => $response->content,
-                'model_used' => $response->model_used,
-                'advisor'    => $response->advisor ? [
+                'id'               => $response->id,
+                'response_type'    => $response->response_type,
+                'round_number'     => $response->round_number,
+                'tension_key'      => $response->tension_key,
+                'tension_label'    => $response->tension_label,
+                'content'          => $response->content,
+                'model_used'       => $response->model_used,
+                'prompt_tokens'    => $response->prompt_tokens,
+                'completion_tokens' => $response->completion_tokens,
+                'cost_gbp'         => $response->cost_gbp,
+                'advisor'          => $response->advisor ? [
                     'id'   => $response->advisor->id,
                     'name' => $response->advisor->name,
                     'role' => $response->advisor->role,

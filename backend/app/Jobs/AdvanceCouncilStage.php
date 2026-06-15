@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Advisor;
 use App\Models\AdvisorResponse;
 use App\Models\BoardSession;
+use App\Support\CostGuard;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -86,6 +87,29 @@ class AdvanceCouncilStage implements ShouldQueue
             ->count();
 
         if ($session->status === 'processing' && empty($session->selected_tensions)) {
+            $guard  = new CostGuard();
+            $status = $guard->status($session->id);
+
+            if ($status->session_exceeded) {
+                Log::warning('[Council] Session budget exceeded after round 1; skipping critique round', [
+                    'session_id'   => $session->id,
+                    'session_cost' => $status->session_spend,
+                    'session_tokens' => $status->session_tokens,
+                ]);
+
+                $session->update([
+                    'cost_summary' => [
+                        'budget_hit'                 => true,
+                        'degradation'                => 'Critique round skipped: session budget exceeded after round 1.',
+                        'monthly_cost_at_start_gbp'  => $status->monthly_spend,
+                    ],
+                ]);
+
+                FinalizeCouncilDeliberation::dispatch($session->id)->onQueue('debate');
+
+                return;
+            }
+
             $session->update(['status' => 'selecting_tensions']);
 
             Log::info('[Council] Advancing to tension selection', ['session_id' => $session->id]);

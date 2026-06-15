@@ -500,7 +500,43 @@ Future deliberations are therefore able to build upon accumulated institutional 
 
 Unlike simple conversational persistence, semantic memory therefore represents an evolving interpretive layer within the institution rather than a passive archive of previous exchanges. The objective is not perfect historical recall, but the gradual development of durable contextual awareness through repeated deliberation and institutional continuity.
 
-### 5.3 Decisions and Conclusions
+### 5.3 Structured Memory Objects
+
+Episodic and semantic memory provide the institution with raw history and thematic continuity.
+However, both mechanisms rely on retrieval processes that may fail to surface critical constraints
+when semantic similarity is insufficient. A conversation from months ago may contain a fundamental
+project requirement that an embedding search misses because the new question was phrased
+differently.
+
+Structured memory objects address this by extracting and storing typed, named records from
+completed deliberations — records that are always injected regardless of semantic distance.
+
+The core memory types are:
+
+- **Requirements**: must and should constraints on the subject
+- **Decisions**: agreed choices and their rationale
+- **Open Questions**: unresolved issues requiring future attention
+- **User Facts**: stable, long-term facts about the user or their situation
+
+These objects are extracted by a dedicated LLM pass after each session and presented to the
+human participant as proposed memories before any item is committed. This human review gate
+ensures the institution cannot accumulate bad extractions, hallucinated constraints, or
+contextually inappropriate facts without explicit approval.
+
+Once approved, structured memory items become active records with their own lifecycle:
+proposed → active → superseded, archived, or rejected. Items carry the source session,
+confidence estimate, and last-confirmed timestamp.
+
+At retrieval time, active structured memory for the selected subject is always injected before
+semantic search results. Requirements and decisions are never filtered by similarity threshold;
+they are always present if active. This ordering ensures the institution cannot answer a question
+while silently missing a constraint it has been explicitly told to remember.
+
+Structured memory therefore extends episodic and semantic memory with a reliable, human-curated
+layer of institutional facts — the closest approximation within this architecture to an
+institution that genuinely knows something for certain.
+
+### 5.4 Decisions and Conclusions
 The system explicitly records significant decisions, recommendations,
 and synthesized conclusions produced through deliberation. These records
 may include:
@@ -518,7 +554,7 @@ decisions as additional evidence or reasoning becomes available.
 This allows the institution's understanding to evolve while preserving
 the historical pathway through which that evolution occurred.
 
-### 5.4 Unresolved Questions and Preserved Disagreement
+### 5.5 Unresolved Questions and Preserved Disagreement
 Not all deliberations result in stable consensus. In many complex
 domains, uncertainty, contradiction, and incomplete information remain
 persistent features of the reasoning process.
@@ -539,7 +575,7 @@ By preserving unresolved tension within institutional memory, future
 deliberations are able to revisit prior uncertainty rather than
 repeatedly rediscovering it.
 
-### 5.5 Advisor Reliability and Epistemic Tracking
+### 5.6 Advisor Reliability and Epistemic Tracking
 The architecture may optionally maintain historical metadata regarding
 the reliability and behaviour of participating advisors over time.
 
@@ -559,7 +595,7 @@ Over extended interaction periods, this may allow the institution to
 develop a more nuanced understanding of the relative strengths,
 limitations, and behavioural tendencies of its own participants.
 
-### 5.6 Memory as an Active Cognitive Process
+### 5.7 Memory as an Active Cognitive Process
 Within the proposed architecture, memory is not treated as a passive
 archive. Retrieval, summarization, reinterpretation, and historical
 comparison form part of the ongoing deliberative process itself.
@@ -1022,6 +1058,18 @@ This phase includes:
 
 The objective is to allow future discussions to build upon accumulated
 institutional context rather than isolated prompts.
+
+**Phase 2a --- Structured Memory Objects**
+
+Once episodic memory and semantic retrieval are established, development should introduce typed,
+human-curated structured memory objects to complement embedding-based retrieval.
+
+This phase includes:
+- a memory extractor LLM pass after each completed session
+- a human review and approval step before any item is stored as active
+- typed records: requirements, decisions, open questions, user facts
+- a retrieval hierarchy that injects structured memory before semantic search
+- a subject memory panel exposing active records alongside each deliberation
 
 **Phase 3 --- Structured Deliberation and Consensus**
 

@@ -79,6 +79,10 @@ Through memory, my "institution" contains "permanent" members, and historical co
 
 Ironically, had I been building CouncilOfCrows with the help of CouncilOfCrows and a mixture of LLMs, it is less likely that I would have been led down any kind of garden path. Or at least I like to think so. I had better build it to find out ...
 
+### Update 2026-06-15 Structured Memory
+
+It transpires that semantic memory is not enough, as the embedding model cannot enfer what the important and immovabale facts are, from a particular problem. Added a new phase adding a layer above semantic search: typed, human-curated memory objects (requirements, decisions, open questions, user facts) that are always injected reliably before embedding retrieval, preventing critical constraints from being missed because they fell below a similarity threshold.
+
 ## Author
 
 Nick Casey <nickoil@hotmail.com>

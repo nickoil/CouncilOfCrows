@@ -394,7 +394,142 @@ The institution demonstrates accumulated contextual understanding across repeate
 
 **Nick Note**: read more on semantic retrieval
 
-## Phase 8 — Depth Modes and Specialist Participation
+## Phase 8 — Structured Memory
+
+### Goal
+
+Replace passive episodic archives with typed, human-curated structured memory objects that persist
+across deliberations and are always injected before semantic retrieval.
+
+### Memory Model
+
+Subject memory is organised as typed objects alongside raw history:
+
+```text
+Subject
+├── Episodes          raw deliberation history (existing)
+├── Requirements      must/should constraints
+├── Decisions         agreed choices
+├── Open Questions    unresolved issues
+├── User Facts        stable facts about the user or project
+└── Semantic Memories themes/summaries (existing)
+```
+
+### Extraction
+
+After each session completes, dispatch a cheap LLM "memory extractor" pass:
+
+- model: cheapest available (Gemini Flash Lite or equivalent)
+- prompt: return strict JSON only, no commentary
+- output schema:
+
+```json
+{
+  "requirements": [
+    { "title": "...", "status": "active", "evidence": "...", "confidence": 0.95 }
+  ],
+  "decisions": [
+    { "title": "...", "rationale": "...", "confidence": 0.80 }
+  ],
+  "open_questions": [
+    { "question": "...", "status": "open" }
+  ],
+  "user_facts": [
+    { "fact": "...", "scope": "property", "stability": "long_term" }
+  ]
+}
+```
+
+The extractor is not automatically trusted. All output is treated as proposed.
+
+### Human Review
+
+Extracted items are displayed as a proposed memory list for the user to approve, edit, or reject
+before any item is stored as active:
+
+```text
+The council thinks the following should be remembered:
+[✓] Safe asbestos removal required for roof project
+[✓] Cottage is cob construction
+[ ] User is "not a good manager" — too contextual, reject?
+```
+
+This gate ensures the institution never stores bad extractions without human oversight.
+
+### Storage
+
+New tables:
+
+```text
+requirements          (subject_id, title, status, confidence, source_session_id, last_confirmed_at)
+decisions             (subject_id, title, rationale, status, confidence, source_session_id)
+open_questions        (subject_id, question, status, source_session_id)
+user_facts            (subject_id, fact, scope, stability, status, source_session_id)
+memory_evidence_links (memory_type, memory_id, session_id, excerpt)
+```
+
+Item lifecycle: proposed → active → superseded / archived / rejected
+
+All items carry: subject_id, type, content, status, confidence, source_session_id,
+created_at, last_confirmed_at.
+
+### Retrieval
+
+Structured memory is always injected before semantic retrieval in this fixed order:
+
+```text
+1. Active requirements
+2. Active decisions
+3. Open questions
+4. Relevant semantic memories (embedding similarity search)
+5. Recent episodes (subject-scoped)
+```
+
+This ordering ensures critical constraints cannot be missed because they fell below a
+similarity threshold — the failure mode that motivated this phase.
+
+### UI
+
+Subject Memory Panel (shown beside each deliberation for the selected subject):
+
+```text
+Roof Replacement — Subject Memory
+
+Requirements
+1. Scaffolding and site access
+2. Safe asbestos removal
+3. Soffits, fascia, and eaves ventilation
+4. Cob-friendly loft insulation
+5. Breathable membrane and artificial slates
+6. Integrated MCS solar
+
+Open Questions
+— Who can manage the full project scope?
+— Is integrated solar worth the coordination risk?
+
+Decisions
+— Solar integration deferred (high coordination risk)
+```
+
+Additional UI:
+- proposed memory review flow after each completed session
+- per-item approve / edit / reject controls
+- visible memory injection indicators in advisor prompt context
+- curation controls: archive, supersede, merge duplicates
+
+### Constraints
+
+- extraction only runs on sessions with an active subject
+- no auto-promotion: every item requires human approval before becoming active
+- extractor model should be cheapest available to minimise cost impact
+- structured injection is bounded: max items per category (configurable)
+
+### Done When
+
+Memory items are extracted after sessions, reviewed by the user, stored as structured records,
+and reliably injected into every future deliberation on that subject ahead of semantic retrieval.
+
+## Phase 9 — Depth Modes and Specialist Participation
 
 ### Goal
 
@@ -458,7 +593,7 @@ Users can deliberately control reasoning depth and temporary expertise
 participation.
 
 
-## Phase 9 — Epistemic Tracking and Hallucination Mitigation
+## Phase 10 — Epistemic Tracking and Hallucination Mitigation
 
 ### Goal
 
@@ -502,7 +637,7 @@ Disagreement, uncertainty, and historical reasoning quality become visible insti
 
 ---
 
-## Phase 10 — Human Feedback and Institutional Governance
+## Phase 11 — Human Feedback and Institutional Governance
 
 ### Goal
 

@@ -1,5 +1,7 @@
 <script>
     import AdvisorResponse from './AdvisorResponse.svelte';
+    import MemoryContext from './MemoryContext.svelte';
+    import SessionCost from './SessionCost.svelte';
 
     let { session } = $props();
 
@@ -166,6 +168,8 @@
         {/if}
     {/if}
 
+    <MemoryContext memories={session.retrieved_memories ?? []} />
+
     <!-- Consensus -->
     {#if session.consensus}
         <div class="border-t border-gray-100 bg-indigo-50 px-5 py-4">
@@ -173,5 +177,7 @@
             <p class="text-sm text-gray-800 whitespace-pre-wrap">{session.consensus}</p>
         </div>
     {/if}
+
+    <SessionCost cost={session.cost} />
 
 </div>
