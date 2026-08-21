@@ -28,6 +28,15 @@ Current focus:
 
 ## Development Notes
 
+### Running locally
+
+1. `docker compose up -d` — starts nginx, backend (PHP-FPM), db, redis, reverb and the queue workers.
+2. `cd frontend && npm run dev` — the `frontend` service in [docker-compose.yml](docker-compose.yml) is commented out; SvelteKit is run on the host instead. Vite ([frontend/vite.config.js](frontend/vite.config.js)) serves it directly over HTTPS on its own port using the `councilofcrows.dv` cert, and [frontend/.env](frontend/.env) points it at the backend on `https://localhost:8088`.
+
+App URL: **https://councilofcrows.dv:3088**
+
+Note that nginx's `location /` (in [docker/nginx/default.conf](docker/nginx/default.conf)) still proxies to `frontend:5173`, which is stale/unused — hitting `https://councilofcrows.dv:8088/` directly will 502 since that upstream isn't running.
+
 The Docker Compose stack currently defines a fixed five-worker Laravel queue pool:
 - `worker`
 - `worker-2`
